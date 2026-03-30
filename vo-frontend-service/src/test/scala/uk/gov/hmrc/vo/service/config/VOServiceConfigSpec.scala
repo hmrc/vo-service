@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.vo.service.config
 
+import play.api.Configuration
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.notificationbanner.NotificationBanner
 import uk.gov.hmrc.vo.unit.test.BaseAppSpec
@@ -24,7 +26,7 @@ import uk.gov.hmrc.vo.unit.test.BaseAppSpec
 /**
   * @author Yuriy Tumakha
   */
-class VOServiceConfigSpec extends BaseAppSpec:
+class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
 
   private val voServiceConfig = inject[VOServiceConfig]
 
@@ -39,6 +41,10 @@ class VOServiceConfigSpec extends BaseAppSpec:
 
     "return true for isWelshTranslationAvailable" in {
       voServiceConfig.isWelshTranslationAvailable shouldBe true
+    }
+
+    "return langCodes" in {
+      voServiceConfig.langCodes shouldBe Set(en, cy)
     }
 
     "return None for platformFrontendHost" in {
@@ -61,5 +67,18 @@ class VOServiceConfigSpec extends BaseAppSpec:
           HtmlContent("<p class='govuk-notification-banner__heading'>This service will be unavailable while we carry out some essential maintenance.</p>"),
           title = Text("Important")
         )
+    }
+
+    "handle empty Configuration" in {
+      val voServiceConfig =
+        new VOServiceConfig:
+          def configuration: Configuration = Configuration.empty
+          def serviceID: String            = "SomeServiceID"
+          def serviceRoot: Call            = Call("GET", "/some-service-root")
+
+      voServiceConfig.isWelshTranslationAvailable shouldBe false
+      voServiceConfig.serviceID                   shouldBe "SomeServiceID"
+      voServiceConfig.serviceRoot.url             shouldBe "/some-service-root"
+      voServiceConfig.langCodes                   shouldBe Set(en)
     }
   }

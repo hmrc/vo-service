@@ -21,6 +21,6 @@ package uk.gov.hmrc.vo.service.config
   */
 trait LangCodes extends LangSupport:
 
-  val isWelshTranslationAvailable: Boolean
+  def isWelshTranslationAvailable: Boolean
 
   val langCodes: Set[String] = if isWelshTranslationAvailable then Set(en, cy) else Set(en)

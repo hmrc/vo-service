@@ -30,4 +30,4 @@ class TestAppConfig @Inject() (val configuration: Configuration) extends VOServi
 
   override def serviceID: String                    = "TestServiceID"
   override def serviceRoot: Call                    = Call("GET", "/service-root")
-  override val isWelshTranslationAvailable: Boolean = true
+  override def isWelshTranslationAvailable: Boolean = true

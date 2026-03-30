@@ -27,12 +27,10 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.notificationbanner.Notificatio
   */
 trait VOServiceConfig extends LangCodes:
 
-  val configuration: Configuration
-
+  def configuration: Configuration
   def serviceID: String
   def serviceRoot: Call
-
-  override val isWelshTranslationAvailable: Boolean = false
+  override def isWelshTranslationAvailable: Boolean = false
 
   /**
     * "platform.frontend.host" is defined only in the cloud environment.
