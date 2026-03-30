@@ -29,7 +29,15 @@ class VOServiceConfigSpec extends BaseAppSpec:
   private val voServiceConfig = inject[VOServiceConfig]
 
   "VOServiceConfig" should {
-    "set isWelshTranslationAvailable = true" in {
+    "return serviceID" in {
+      voServiceConfig.serviceID shouldBe "TestServiceID"
+    }
+
+    "return serviceRoot" in {
+      voServiceConfig.serviceRoot.url shouldBe "/service-root"
+    }
+
+    "return true for isWelshTranslationAvailable" in {
       voServiceConfig.isWelshTranslationAvailable shouldBe true
     }
 
@@ -39,6 +47,10 @@ class VOServiceConfigSpec extends BaseAppSpec:
 
     "return feedbackFrontendUrl" in {
       voServiceConfig.feedbackFrontendUrl shouldBe "http://localhost:9514/feedback/TestServiceID"
+    }
+
+    "return true for isNotificationBannerEnabled" in {
+      voServiceConfig.isNotificationBannerEnabled shouldBe true
     }
 
     "build NotificationBanner" in {
