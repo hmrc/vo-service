@@ -27,7 +27,7 @@ class Scala3EnumJsonFormatSpec extends BaseSpec:
   enum Color:
     case Red, Green, Blue
 
-  implicit val format: Format[Color] = Scala3EnumJsonFormat.format
+  given Format[Color] = Scala3EnumJsonFormat.format
 
   import Color.*
 
