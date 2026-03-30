@@ -16,13 +16,15 @@
 
 package test
 
-import com.google.inject.AbstractModule
+import play.api.{Configuration, Environment}
+import play.api.inject.{Binding, Module}
 import uk.gov.hmrc.vo.service.config.VOServiceConfig
 
 /**
   * @author Yuriy Tumakha
   */
-class TestModule extends AbstractModule:
+class TestModule extends Module:
 
-  override def configure(): Unit =
-    bind(classOf[VOServiceConfig]).to(classOf[TestAppConfig])
+  override def bindings(env: Environment, conf: Configuration): Seq[Binding[?]] = Seq(
+    bind[VOServiceConfig].to[TestAppConfig]
+  )
