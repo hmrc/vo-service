@@ -28,5 +28,6 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class TestAppConfig @Inject() (val configuration: Configuration) extends VOServiceConfig:
 
-  override val serviceID: String = "TestServiceID"
-  override def serviceRoot: Call = Call("GET", "/service-root")
+  override def serviceID: String                    = "TestServiceID"
+  override def serviceRoot: Call                    = Call("GET", "/service-root")
+  override val isWelshTranslationAvailable: Boolean = true

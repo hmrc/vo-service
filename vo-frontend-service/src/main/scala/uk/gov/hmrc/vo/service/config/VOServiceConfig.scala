@@ -28,7 +28,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.notificationbanner.Notificatio
 trait VOServiceConfig extends LangCodes:
 
   val configuration: Configuration
-  val serviceID: String
+
+  def serviceID: String
   def serviceRoot: Call
 
   override val isWelshTranslationAvailable: Boolean = false

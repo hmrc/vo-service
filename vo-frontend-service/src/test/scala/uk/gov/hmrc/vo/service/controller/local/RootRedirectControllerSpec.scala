@@ -17,7 +17,6 @@
 package uk.gov.hmrc.vo.service.controller.local
 
 import play.api.test.Helpers.*
-import uk.gov.hmrc.vo.service.config.VOServiceConfig
 import uk.gov.hmrc.vo.unit.test.BaseAppSpec
 
 /**
@@ -25,13 +24,12 @@ import uk.gov.hmrc.vo.unit.test.BaseAppSpec
   */
 class RootRedirectControllerSpec extends BaseAppSpec:
 
-  private val controller                       = inject[RootRedirectController]
-  private val voServiceConfig: VOServiceConfig = inject[VOServiceConfig]
+  private val controller = inject[RootRedirectController]
 
   "RootRedirectController" should {
     "return redirect to service root" in {
       val result = controller.rootRedirect(getRequest)
       status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some(voServiceConfig.serviceRoot.url)
+      redirectLocation(result) shouldBe Some("/service-root")
     }
   }
