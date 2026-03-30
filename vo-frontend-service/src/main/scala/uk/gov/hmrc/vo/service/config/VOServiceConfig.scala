@@ -29,7 +29,7 @@ trait VOServiceConfig extends LangCodes:
 
   val configuration: Configuration
   val serviceID: String
-  val serviceRoot: Call
+  def serviceRoot: Call
 
   override val isWelshTranslationAvailable: Boolean = false
 
