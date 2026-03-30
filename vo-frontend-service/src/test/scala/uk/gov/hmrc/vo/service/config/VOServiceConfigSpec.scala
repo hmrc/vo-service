@@ -46,7 +46,7 @@ class VOServiceConfigSpec extends BaseAppSpec:
 
       voServiceConfig.notificationBanner shouldBe
         NotificationBanner(
-          content = HtmlContent("<p class='govuk-notification-banner__heading'>This service will be unavailable while we carry out some essential maintenance.</p>"),
+          HtmlContent("<p class='govuk-notification-banner__heading'>This service will be unavailable while we carry out some essential maintenance.</p>"),
           title = Text("Important")
         )
     }
