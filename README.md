@@ -1,8 +1,13 @@
 
 # vo-service
 
-This is a placeholder README.md for a new repository
+The Valuation Office’s reusable service components library.
 
-### License
+## Libraries
+
+- vo-backend-service
+- vo-frontend-service
+
+## License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
