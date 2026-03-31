@@ -12,12 +12,12 @@ private object LibDependencies {
   )
 
   val backendDependencies: Seq[ModuleID] = common ++ Seq(
-    "uk.gov.hmrc" %% "bootstrap-backend-play-30" % bootstrapVersion
+    "uk.gov.hmrc" %% "bootstrap-backend-play-30" % bootstrapVersion % Provided
   )
 
   val frontendDependencies: Seq[ModuleID] = common ++ Seq(
-    "uk.gov.hmrc" %% "bootstrap-frontend-play-30" % bootstrapVersion,
-    "uk.gov.hmrc" %% "play-frontend-hmrc-play-30" % playFrontendVersion
+    "uk.gov.hmrc" %% "bootstrap-frontend-play-30" % bootstrapVersion    % Provided,
+    "uk.gov.hmrc" %% "play-frontend-hmrc-play-30" % playFrontendVersion % Provided
   )
 
 }
