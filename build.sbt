@@ -17,7 +17,9 @@ lazy val voBackendService = Project("vo-backend-service", file("vo-backend-servi
   )
 
 lazy val voFrontendService = Project("vo-frontend-service", file("vo-frontend-service"))
+  .enablePlugins(SbtTwirl)
   .settings(
+    Compile / TwirlKeys.compileTemplates / sourceDirectories += baseDirectory.value / "src/main/twirl",
     libraryDependencies ++= LibDependencies.frontendDependencies
   )
   .dependsOn(voBackendService)
