@@ -32,5 +32,5 @@ class RootRedirectController @Inject() (
 ) extends FrontendController(cc):
 
   def rootRedirect: Action[AnyContent] = Action {
-    Redirect(voServiceConfig.serviceRoot)
+    Redirect(voServiceConfig.serviceLocalRoot)
   }
