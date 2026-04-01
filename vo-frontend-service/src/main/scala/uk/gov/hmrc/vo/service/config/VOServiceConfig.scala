@@ -18,7 +18,7 @@ package uk.gov.hmrc.vo.service.config
 
 import play.api.Configuration
 import play.api.i18n.Messages
-import play.api.mvc.Call
+import play.api.mvc.{Call, Request}
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.BackLink
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
@@ -50,7 +50,7 @@ trait VOServiceConfig extends LangCodes:
   private val feedbackFrontendForm: Call = Call("GET", s"$feedbackBase/feedback/$serviceID")
 
   // Home Page
-  private val homePageMap = langCodes.map(lang => lang -> configuration.getOptional[String](s"service.homePageUrl.$lang")).toMap[String, Option[String]]
+  private val homePageMap                                           = langCodes.map(lang => lang -> configuration.getOptional[String](s"service.homePageUrl.$lang")).toMap[String, Option[String]]
   private def homePageUrl(using messages: Messages): Option[String] = homePageMap(lang)
 
   // Notification Banner
@@ -76,7 +76,8 @@ trait VOServiceConfig extends LangCodes:
     additionalScriptsBlock: Option[Html] = None,
     beforeContentBlock: Option[Html] = None,
     fullWidth: Boolean = false
-  )(using messages: Messages
+  )(using request: Request[?],
+    messages: Messages
   ): HmrcStandardPageParams =
     HmrcStandardPageParams(
       pageTitle = Some(pageTitle),
@@ -87,8 +88,8 @@ trait VOServiceConfig extends LangCodes:
         serviceUrl = homePageUrl.orElse(Some(serviceHome.url))
       ),
       banners = Banners(
-        displayHmrcBanner = false,
-        phaseBanner = Some(StandardBetaBanner()(serviceFeedback.url))
+        displayHmrcBanner = request.path == serviceLocalRoot.url,
+        phaseBanner = Option.when(request.path != serviceFeedback.url)(StandardBetaBanner()(serviceFeedback.url))
       ),
       templateOverrides = TemplateOverrides(
         additionalHeadBlock = additionalHeadBlock,

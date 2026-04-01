@@ -18,7 +18,7 @@ package uk.gov.hmrc.vo.service.config
 
 import play.api.Configuration
 import play.api.i18n.Messages
-import play.api.mvc.Call
+import play.api.mvc.{Call, Request}
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.backlink.BackLink
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
@@ -96,7 +96,8 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
     }
 
     "build HmrcStandardPageParams" in {
-      given Messages = messagesApi.preferred(Seq.empty)
+      given Request[?] = getRequest
+      given Messages   = messagesApi.preferred(Seq.empty)
 
       val standardPageParams = voServiceConfig.standardPageParams(
         "Page title",
@@ -130,7 +131,8 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
     }
 
     "build minimal HmrcStandardPageParams" in {
-      given Messages = messagesApi.preferred(Seq.empty)
+      given Request[?] = getRequest
+      given Messages   = messagesApi.preferred(Seq.empty)
 
       val standardPageParams = voServiceConfig.standardPageParams("Simple page title")
 
