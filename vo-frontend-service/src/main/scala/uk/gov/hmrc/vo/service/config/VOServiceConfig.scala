@@ -49,6 +49,10 @@ trait VOServiceConfig extends LangCodes:
   private val feedbackBase: String       = platformFrontendHost.getOrElse(localFeedbackBase)
   private val feedbackFrontendForm: Call = Call("GET", s"$feedbackBase/feedback/$serviceID")
 
+  // Home Page
+  private val homePageMap = langCodes.map(lang => lang -> configuration.getOptional[String](s"service.homePageUrl.$lang")).toMap[String, Option[String]]
+  private def homePageUrl(using messages: Messages): Option[String] = homePageMap(lang)
+
   // Notification Banner
   private def buildNotificationBanner(lang: String): NotificationBanner =
     NotificationBanner(
@@ -80,7 +84,7 @@ trait VOServiceConfig extends LangCodes:
       isWelshTranslationAvailable = isWelshTranslationAvailable,
       serviceName = Some(messages("service.name")),
       serviceURLs = ServiceURLs(
-        serviceUrl = Some(serviceHome.url)
+        serviceUrl = homePageUrl.orElse(Some(serviceHome.url))
       ),
       banners = Banners(
         displayHmrcBanner = false,
