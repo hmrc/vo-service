@@ -19,7 +19,7 @@ package uk.gov.hmrc.vo.service.config
 import play.api.i18n.Messages
 import play.api.mvc.RequestHeader
 import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.Aliases.{BackLink, ExitThisPage, ServiceNavigation, ServiceNavigationItem}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{BackLink, ServiceNavigation, ServiceNavigationItem}
 import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{Banners, HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
 import uk.gov.hmrc.vo.service.config.VOServiceConfig
@@ -51,8 +51,7 @@ trait StandardPageConfig:
     additionalHeadBlock: Option[Html] = None,
     additionalScriptsBlock: Option[Html] = None,
     beforeContentBlock: Option[Html] = None,
-    serviceNavigationItems: Seq[ServiceNavigationItem] = Seq.empty,
-    exitThisPage: Option[ExitThisPage] = None
+    serviceNavigationItems: Seq[ServiceNavigationItem] = Seq.empty
   )(using request: RequestHeader,
     messages: Messages
   ): HmrcStandardPageParams =
@@ -72,6 +71,5 @@ trait StandardPageConfig:
         beforeContentBlock = beforeContentBlock,
         mainContentLayout = Option.when(fullWidth)(FullWidthMainContent()(_))
       ),
-      serviceNavigation = Option(serviceNavigationItems).filter(_.nonEmpty).map(ServiceNavigation(serviceName, serviceUrls.serviceUrl, _)),
-      exitThisPage = exitThisPage
+      serviceNavigation = Option(serviceNavigationItems).filter(_.nonEmpty).map(ServiceNavigation(serviceName, serviceUrls.serviceUrl, _))
     )

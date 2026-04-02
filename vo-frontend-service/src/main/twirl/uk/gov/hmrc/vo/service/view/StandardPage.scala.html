@@ -36,8 +36,7 @@
         additionalScriptsBlock: Option[Html] = None,
         beforeContentBlock: Option[Html] = None, // If specified, the backLink is ignored
         footerBlock: Option[Html] = None,
-        serviceNavigationItems: Seq[ServiceNavigationItem] = Seq.empty,
-        exitThisPage: Option[ExitThisPage] = None
+        serviceNavigationItems: Seq[ServiceNavigationItem] = Seq.empty
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
 @params = @{
@@ -48,8 +47,7 @@
         additionalHeadBlock = Some(standardHead(stylesheetUrl, additionalHeadBlock)),
         additionalScriptsBlock = additionalScriptsBlock,
         beforeContentBlock = beforeContentBlock,
-        serviceNavigationItems = serviceNavigationItems,
-        exitThisPage = exitThisPage
+        serviceNavigationItems = serviceNavigationItems
     )
 }
 
