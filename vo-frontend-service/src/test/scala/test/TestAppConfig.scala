@@ -32,3 +32,4 @@ class TestAppConfig @Inject() (val configuration: Configuration) extends VOServi
   override def serviceLocalRoot: Call               = Call("GET", "/service-root")
   override def serviceHome: Call                    = Call("GET", "/service-root/home")
   override def isWelshTranslationAvailable: Boolean = true
+  override def stylesheet: Option[Call]             = Some(Call("GET", "/service-root/assets/stylesheets/app.min.css"))

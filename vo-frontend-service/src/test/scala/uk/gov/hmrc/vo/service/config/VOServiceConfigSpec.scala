@@ -62,6 +62,10 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
       voServiceConfig.isWelshTranslationAvailable shouldBe true
     }
 
+    "return stylesheet url" in {
+      voServiceConfig.stylesheet.value.url shouldBe "/service-root/assets/stylesheets/app.min.css"
+    }
+
     "return langCodes" in {
       voServiceConfig.langCodes shouldBe Set(en, cy)
     }
@@ -91,16 +95,18 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
     "handle empty Configuration" in {
       val voServiceConfig =
         new VOServiceConfig:
-          def configuration: Configuration   = Configuration.empty
-          def serviceID: String              = "SomeServiceID"
-          def serviceHome: Call              = Call("GET", "/some-service-root/home")
-          override def serviceFeedback: Call = Call("GET", "/some-service-root/feedback")
+          def configuration: Configuration      = Configuration.empty
+          def serviceID: String                 = "SomeServiceID"
+          def serviceHome: Call                 = Call("GET", "/some-service-root/home")
+          override def serviceFeedback: Call    = Call("GET", "/some-service-root/feedback")
+          override def stylesheet: Option[Call] = None
 
       voServiceConfig.isWelshTranslationAvailable shouldBe false
       voServiceConfig.serviceID                   shouldBe "SomeServiceID"
       voServiceConfig.serviceLocalRoot.url        shouldBe "/some-service-root/home"
       voServiceConfig.serviceHome.url             shouldBe "/some-service-root/home"
       voServiceConfig.serviceFeedback.url         shouldBe "/some-service-root/feedback"
+      voServiceConfig.stylesheet                  shouldBe None
       voServiceConfig.langCodes                   shouldBe Set(en)
     }
 

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.vo.service.config
 
 import play.api.i18n.Messages
-import play.api.mvc.RequestHeader
+import play.api.mvc.{Call, RequestHeader}
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.{BackLink, ServiceNavigation, ServiceNavigationItem}
 import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
@@ -31,6 +31,8 @@ import uk.gov.hmrc.vo.service.view.html.FullWidthMainContent
 trait StandardPageConfig:
 
   this: VOServiceConfig =>
+
+  def stylesheet: Option[Call]
 
   def pageTitleFormat(pageHeading: String)(using messages: Messages): String =
     s"$pageHeading - ${messages("service.name")} - ${messages("gov.name")}"
