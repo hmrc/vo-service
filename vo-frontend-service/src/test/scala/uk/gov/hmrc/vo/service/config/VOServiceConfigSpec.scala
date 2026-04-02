@@ -20,8 +20,10 @@ import play.api.Configuration
 import play.api.i18n.Messages
 import play.api.mvc.{Call, Request}
 import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.Aliases.{ServiceNavigation, ServiceNavigationItem}
+import uk.gov.hmrc.govukfrontend.views.html.components.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.backlink.BackLink
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.notificationbanner.NotificationBanner
 import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{Banners, ServiceURLs}
@@ -46,6 +48,10 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
 
     "return serviceHome url" in {
       voServiceConfig.serviceHome.url shouldBe "/service-root/home"
+    }
+
+    "return serviceMenuSignOut url" in {
+      voServiceConfig.serviceMenuSignOut shouldBe None
     }
 
     "return serviceFeedback url" in {
@@ -78,18 +84,21 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
         )
     }
 
+    "return empty sequence timeoutDialogEnabledExcept" in {
+      voServiceConfig.timeoutDialogEnabledExcept shouldBe empty
+    }
+
     "handle empty Configuration" in {
       val voServiceConfig =
         new VOServiceConfig:
           def configuration: Configuration   = Configuration.empty
           def serviceID: String              = "SomeServiceID"
-          def serviceLocalRoot: Call         = Call("GET", "/some-service-root")
           def serviceHome: Call              = Call("GET", "/some-service-root/home")
           override def serviceFeedback: Call = Call("GET", "/some-service-root/feedback")
 
       voServiceConfig.isWelshTranslationAvailable shouldBe false
       voServiceConfig.serviceID                   shouldBe "SomeServiceID"
-      voServiceConfig.serviceLocalRoot.url        shouldBe "/some-service-root"
+      voServiceConfig.serviceLocalRoot.url        shouldBe "/some-service-root/home"
       voServiceConfig.serviceHome.url             shouldBe "/some-service-root/home"
       voServiceConfig.serviceFeedback.url         shouldBe "/some-service-root/feedback"
       voServiceConfig.langCodes                   shouldBe Set(en)
@@ -99,16 +108,17 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
       given Request[?] = getRequest
       given Messages   = messagesApi.preferred(Seq.empty)
 
-      val standardPageParams = voServiceConfig.standardPageParams(
-        "Page title",
-        Some(BackLink("/back/link")),
+      val standardPageParams = voServiceConfig.pageParams(
+        "Page heading",
+        Some("/back/link"),
+        true,
         Some(Html("<head/>")),
         Some(Html("<script/>")),
         Some(Html("<div>beforeContent</div>")),
-        true
+        Seq(ServiceNavigationItem(Text("Menu item 1"), "#"))
       )
 
-      standardPageParams.pageTitle.value             shouldBe "Page title"
+      standardPageParams.pageTitle.value             shouldBe "Page heading - service.name - gov.name"
       standardPageParams.backLink.value              shouldBe BackLink("/back/link")
       standardPageParams.isWelshTranslationAvailable shouldBe true
       standardPageParams.serviceName.value           shouldBe "service.name"
@@ -128,15 +138,21 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
 
       val content = Html("<b>content</b>")
       standardPageParams.templateOverrides.mainContentLayout.value(content) shouldBe FullWidthMainContent()(content)
+
+      standardPageParams.serviceNavigation.value shouldBe ServiceNavigation(
+        Some("service.name"),
+        Some("/service-root/home"),
+        List(ServiceNavigationItem(Text("Menu item 1"), "#"))
+      )
     }
 
     "build minimal HmrcStandardPageParams" in {
       given Request[?] = getRequest
       given Messages   = messagesApi.preferred(Seq.empty)
 
-      val standardPageParams = voServiceConfig.standardPageParams("Simple page title")
+      val standardPageParams = voServiceConfig.pageParams("Simple page heading")
 
-      standardPageParams.pageTitle.value             shouldBe "Simple page title"
+      standardPageParams.pageTitle.value             shouldBe "Simple page heading - service.name - gov.name"
       standardPageParams.backLink                    shouldBe None
       standardPageParams.isWelshTranslationAvailable shouldBe true
       standardPageParams.serviceName.value           shouldBe "service.name"
@@ -154,6 +170,7 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
       standardPageParams.templateOverrides.additionalScriptsBlock shouldBe None
       standardPageParams.templateOverrides.beforeContentBlock     shouldBe None
       standardPageParams.templateOverrides.mainContentLayout      shouldBe None
+      standardPageParams.serviceNavigation                        shouldBe None
     }
 
   }

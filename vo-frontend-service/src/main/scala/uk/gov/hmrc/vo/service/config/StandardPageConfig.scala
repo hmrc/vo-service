@@ -1,0 +1,77 @@
+/*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package uk.gov.hmrc.vo.service.config
+
+import play.api.i18n.Messages
+import play.api.mvc.RequestHeader
+import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.Aliases.{BackLink, ExitThisPage, ServiceNavigation, ServiceNavigationItem}
+import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{Banners, HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
+import uk.gov.hmrc.vo.service.config.VOServiceConfig
+import uk.gov.hmrc.vo.service.view.html.FullWidthMainContent
+
+/**
+  * @author Yuriy Tumakha
+  */
+trait StandardPageConfig:
+
+  this: VOServiceConfig =>
+
+  def pageTitleFormat(pageHeading: String)(using messages: Messages): String =
+    s"$pageHeading - ${messages("service.name")} - ${messages("gov.name")}"
+
+  def serviceName(using messages: Messages): Option[String] = Some(messages("service.name"))
+
+  def homePageUrl(using messages: Messages): Option[String] = configuration.getOptional[String](s"service.homePageUrl.$lang")
+
+  def serviceUrls(using messages: Messages) = ServiceURLs(
+    serviceUrl = homePageUrl.orElse(Some(serviceHome.url)),
+    signOutUrl = serviceMenuSignOut.map(_.url)
+  )
+
+  def pageParams(
+    pageHeading: String,
+    backLinkUrl: Option[String] = None,
+    fullWidth: Boolean = false,
+    additionalHeadBlock: Option[Html] = None,
+    additionalScriptsBlock: Option[Html] = None,
+    beforeContentBlock: Option[Html] = None,
+    serviceNavigationItems: Seq[ServiceNavigationItem] = Seq.empty,
+    exitThisPage: Option[ExitThisPage] = None
+  )(using request: RequestHeader,
+    messages: Messages
+  ): HmrcStandardPageParams =
+    HmrcStandardPageParams(
+      pageTitle = Some(pageTitleFormat(pageHeading)),
+      backLink = backLinkUrl.map(BackLink(_)),
+      isWelshTranslationAvailable = isWelshTranslationAvailable,
+      serviceName = serviceName,
+      serviceURLs = serviceUrls,
+      banners = Banners(
+        displayHmrcBanner = request.path == serviceLocalRoot.url,
+        phaseBanner = Option.when(request.path != serviceFeedback.url)(StandardBetaBanner()(serviceFeedback.url))
+      ),
+      templateOverrides = TemplateOverrides(
+        additionalHeadBlock = additionalHeadBlock,
+        additionalScriptsBlock = additionalScriptsBlock,
+        beforeContentBlock = beforeContentBlock,
+        mainContentLayout = Option.when(fullWidth)(FullWidthMainContent()(_))
+      ),
+      serviceNavigation = Option(serviceNavigationItems).filter(_.nonEmpty).map(ServiceNavigation(serviceName, serviceUrls.serviceUrl, _)),
+      exitThisPage = exitThisPage
+    )

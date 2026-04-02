@@ -18,25 +18,22 @@ package uk.gov.hmrc.vo.service.config
 
 import play.api.Configuration
 import play.api.i18n.Messages
-import play.api.mvc.{Call, Request}
-import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.Aliases.BackLink
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.notificationbanner.NotificationBanner
-import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{Banners, HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
-import uk.gov.hmrc.vo.service.view.html.FullWidthMainContent
 
 /**
   * @author Yuriy Tumakha
   */
-trait VOServiceConfig extends LangCodes:
+trait VOServiceConfig extends LangCodes with StandardPageConfig with TimeoutDialogConfig:
 
   def configuration: Configuration
   def serviceID: String
-  def serviceLocalRoot: Call
   def serviceHome: Call
+  def serviceMenuSignOut: Option[Call]              = None
   def serviceFeedback: Call                         = feedbackFrontendForm
+  def serviceLocalRoot: Call                        = serviceHome
+  def timeoutDialogEnabledExcept: Seq[Call]         = Seq.empty
   override def isWelshTranslationAvailable: Boolean = false
 
   /**
@@ -48,10 +45,6 @@ trait VOServiceConfig extends LangCodes:
   private val localFeedbackBase          = "http://localhost:9514"
   private val feedbackBase: String       = platformFrontendHost.getOrElse(localFeedbackBase)
   private val feedbackFrontendForm: Call = Call("GET", s"$feedbackBase/feedback/$serviceID")
-
-  // Home Page
-  private val homePageMap                                           = langCodes.map(lang => lang -> configuration.getOptional[String](s"service.homePageUrl.$lang")).toMap[String, Option[String]]
-  private def homePageUrl(using messages: Messages): Option[String] = homePageMap(lang)
 
   // Notification Banner
   private def buildNotificationBanner(lang: String): NotificationBanner =
@@ -68,33 +61,3 @@ trait VOServiceConfig extends LangCodes:
     else Map.empty
 
   def notificationBanner(using messages: Messages): NotificationBanner = notificationBannerMap(lang)
-
-  def standardPageParams(
-    pageTitle: String,
-    backLink: Option[BackLink] = None,
-    additionalHeadBlock: Option[Html] = None,
-    additionalScriptsBlock: Option[Html] = None,
-    beforeContentBlock: Option[Html] = None,
-    fullWidth: Boolean = false
-  )(using request: Request[?],
-    messages: Messages
-  ): HmrcStandardPageParams =
-    HmrcStandardPageParams(
-      pageTitle = Some(pageTitle),
-      backLink = backLink,
-      isWelshTranslationAvailable = isWelshTranslationAvailable,
-      serviceName = Some(messages("service.name")),
-      serviceURLs = ServiceURLs(
-        serviceUrl = homePageUrl.orElse(Some(serviceHome.url))
-      ),
-      banners = Banners(
-        displayHmrcBanner = request.path == serviceLocalRoot.url,
-        phaseBanner = Option.when(request.path != serviceFeedback.url)(StandardBetaBanner()(serviceFeedback.url))
-      ),
-      templateOverrides = TemplateOverrides(
-        additionalHeadBlock = additionalHeadBlock,
-        additionalScriptsBlock = additionalScriptsBlock,
-        beforeContentBlock = beforeContentBlock,
-        mainContentLayout = Option.when(fullWidth)(FullWidthMainContent()(_))
-      )
-    )
