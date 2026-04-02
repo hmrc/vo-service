@@ -137,7 +137,7 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
       standardPageParams.templateOverrides.beforeContentBlock.value     shouldBe Html("<div>beforeContent</div>")
 
       val content = Html("<b>content</b>")
-      standardPageParams.templateOverrides.mainContentLayout.value(content) shouldBe FullWidthMainContent()(content)
+      standardPageParams.templateOverrides.mainContentLayout.value(content) shouldBe FullWidthMainContent(content)
 
       standardPageParams.serviceNavigation.value shouldBe ServiceNavigation(
         Some("service.name"),

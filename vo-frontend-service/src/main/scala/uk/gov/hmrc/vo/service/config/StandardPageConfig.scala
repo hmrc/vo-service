@@ -69,7 +69,7 @@ trait StandardPageConfig:
         additionalHeadBlock = additionalHeadBlock,
         additionalScriptsBlock = additionalScriptsBlock,
         beforeContentBlock = beforeContentBlock,
-        mainContentLayout = Option.when(fullWidth)(FullWidthMainContent()(_))
+        mainContentLayout = Option.when(fullWidth)(FullWidthMainContent(_))
       ),
       serviceNavigation = Option(serviceNavigationItems).filter(_.nonEmpty).map(ServiceNavigation(serviceName, serviceUrls.serviceUrl, _))
     )

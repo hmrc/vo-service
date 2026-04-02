@@ -17,14 +17,14 @@
 package uk.gov.hmrc.vo.service.view.html
 
 import play.twirl.api.Html
-import uk.gov.hmrc.vo.unit.test.BaseAppSpec
+import uk.gov.hmrc.vo.unit.test.BaseSpec
 
 /**
   * @author Yuriy Tumakha
   */
-class FullWidthMainContentSpec extends BaseAppSpec:
+class FullWidthMainContentSpec extends BaseSpec:
 
-  private val component = inject[FullWidthMainContent]
+  private val component = FullWidthMainContent
 
   private def expectedHtml(content: String) = s"""
                                                  |<div class="govuk-grid-row">
