@@ -34,17 +34,21 @@ class FullWidthMainContentSpec extends BaseSpec:
                                                  |</div>
                                                  |""".stripMargin
 
-  "Given a contentBlock of HTML, rendering the FullWidthMainContent" should {
-    "render as expected" in {
+  "FullWidthMainContent" should {
+    "render as expected when given a contentBlock" in {
       val content            = """<h1 class="govuk-heading-xl">Page heading</h1><p class="govuk-body">Some page content</p>"""
       val contentBlock: Html = Html(content)
 
-      component.render(contentBlock) shouldBe Html(expectedHtml(content))
+      component(contentBlock) shouldBe Html(expectedHtml(content))
     }
-  }
 
-  "FullWidthMainContent" should {
-    "handle empty contentBlock" in {
-      component.ref.f(Html("")) shouldBe Html(expectedHtml(""))
+    "render an empty contentBlock" in {
+      component(Html("")) shouldBe Html(expectedHtml(""))
     }
+
+    "have all template methods implemented" in
+      forAll {
+        (str: String) =>
+          component.render(Html(str)) shouldBe component.ref.f(Html(str))
+      }
   }

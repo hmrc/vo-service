@@ -20,21 +20,16 @@ import play.api.Configuration
 import play.api.mvc.Call
 import uk.gov.hmrc.vo.service.config.VOServiceConfig
 
-import javax.inject.{Inject, Singleton}
-
 /**
   * @author Yuriy Tumakha
   */
-@Singleton
-class TestAppConfig @Inject() (val configuration: Configuration) extends VOServiceConfig:
 
-  override def serviceID: String                    = "TestServiceID"
-  override def serviceLocalRoot: Call               = Call("GET", "/service-root")
-  override def serviceHome: Call                    = Call("GET", "/service-root/home")
-  override def serviceFeedback: Call                = Call("GET", "/service-root/feedback")
-  override def isWelshTranslationAvailable: Boolean = true
-  override def stylesheet: Option[Call]             = Some(Call("GET", "/service-root/assets/stylesheets/app.min.css"))
+object EmptyAppConfig extends VOServiceConfig:
 
-  override def timeoutDialogEnabledExcept: Seq[Call] = Seq(
-    serviceHome
-  )
+  def configuration: Configuration = Configuration.empty
+
+  def serviceID: String = "SomeServiceID"
+
+  def serviceHome: Call = Call("GET", "/some-service-root/home")
+
+  override def stylesheet: Option[Call] = None

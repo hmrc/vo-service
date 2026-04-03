@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.vo.service.config
 
-import play.api.Configuration
 import play.api.i18n.Messages
-import play.api.mvc.{Call, Request}
+import play.api.mvc.{Call, RequestHeader}
 import play.twirl.api.Html
+import test.EmptyAppConfig
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ServiceNavigation, ServiceNavigationItem}
 import uk.gov.hmrc.govukfrontend.views.html.components.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.backlink.BackLink
@@ -55,7 +55,7 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
     }
 
     "return serviceFeedback url" in {
-      voServiceConfig.serviceFeedback.url shouldBe "http://localhost:9514/feedback/TestServiceID"
+      voServiceConfig.serviceFeedback.url shouldBe "/service-root/feedback"
     }
 
     "return true for isWelshTranslationAvailable" in {
@@ -89,30 +89,24 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
     }
 
     "return empty sequence timeoutDialogEnabledExcept" in {
-      voServiceConfig.timeoutDialogEnabledExcept shouldBe empty
+      voServiceConfig.timeoutDialogEnabledExcept shouldBe Seq(voServiceConfig.serviceHome)
     }
 
     "handle empty Configuration" in {
-      val voServiceConfig =
-        new VOServiceConfig:
-          def configuration: Configuration      = Configuration.empty
-          def serviceID: String                 = "SomeServiceID"
-          def serviceHome: Call                 = Call("GET", "/some-service-root/home")
-          override def serviceFeedback: Call    = Call("GET", "/some-service-root/feedback")
-          override def stylesheet: Option[Call] = None
+      val voServiceConfig = EmptyAppConfig
 
       voServiceConfig.isWelshTranslationAvailable shouldBe false
       voServiceConfig.serviceID                   shouldBe "SomeServiceID"
       voServiceConfig.serviceLocalRoot.url        shouldBe "/some-service-root/home"
       voServiceConfig.serviceHome.url             shouldBe "/some-service-root/home"
-      voServiceConfig.serviceFeedback.url         shouldBe "/some-service-root/feedback"
+      voServiceConfig.serviceFeedback.url         shouldBe "http://localhost:9514/feedback/SomeServiceID"
       voServiceConfig.stylesheet                  shouldBe None
       voServiceConfig.langCodes                   shouldBe Set(en)
     }
 
     "build HmrcStandardPageParams" in {
-      given Request[?] = getRequest
-      given Messages   = messagesApi.preferred(Seq.empty)
+      given RequestHeader = getRequest
+      given Messages      = messagesApi.preferred(Seq.empty)
 
       val standardPageParams = voServiceConfig.pageParams(
         "Page heading",
@@ -135,7 +129,7 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
 
       standardPageParams.banners shouldBe Banners(
         displayHmrcBanner = false,
-        phaseBanner = Some(StandardBetaBanner()("http://localhost:9514/feedback/TestServiceID"))
+        phaseBanner = Some(StandardBetaBanner()("/service-root/feedback"))
       )
 
       standardPageParams.templateOverrides.additionalHeadBlock.value    shouldBe Html("<head/>")
@@ -153,8 +147,8 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
     }
 
     "build minimal HmrcStandardPageParams" in {
-      given Request[?] = getRequest
-      given Messages   = messagesApi.preferred(Seq.empty)
+      given RequestHeader = getRequest
+      given Messages      = messagesApi.preferred(Seq.empty)
 
       val standardPageParams = voServiceConfig.pageParams("Simple page heading")
 
@@ -169,7 +163,7 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
 
       standardPageParams.banners shouldBe Banners(
         displayHmrcBanner = false,
-        phaseBanner = Some(StandardBetaBanner()("http://localhost:9514/feedback/TestServiceID"))
+        phaseBanner = Some(StandardBetaBanner()("/service-root/feedback"))
       )
 
       standardPageParams.templateOverrides.additionalHeadBlock    shouldBe None
