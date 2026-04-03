@@ -22,10 +22,10 @@
         hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper
 )
 
-@(stylesheetUrl: Option[String], additionalHeadBlock: Option[Html] = None)(implicit request: RequestHeader, messages: Messages)
+@(additionalHeadBlock: Option[Html] = None)(implicit request: RequestHeader, messages: Messages)
 
-@stylesheetUrl.map { url =>
-<link href="@url" media="all" rel="stylesheet" type="text/css" />
+@appConfig.stylesheet.map { link =>
+<link href="@link.url" media="all" rel="stylesheet" type="text/css" />
 }
 @if(appConfig.isTimeoutDialogEnabled) {
 @hmrcTimeoutDialogHelper(

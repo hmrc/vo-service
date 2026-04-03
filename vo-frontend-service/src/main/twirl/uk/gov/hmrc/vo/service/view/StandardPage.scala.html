@@ -31,7 +31,6 @@
         pageHeading: String,
         backLinkUrl: Option[String] = None,
         fullWidth: Boolean = false,
-        stylesheetUrl: Option[String],
         additionalHeadBlock: Option[Html] = None,
         additionalScriptsBlock: Option[Html] = None,
         beforeContentBlock: Option[Html] = None, // If specified, the backLink is ignored
@@ -44,7 +43,7 @@
         pageHeading,
         backLinkUrl,
         fullWidth = fullWidth,
-        additionalHeadBlock = Some(standardHead(stylesheetUrl, additionalHeadBlock)),
+        additionalHeadBlock = Some(standardHead(additionalHeadBlock)),
         additionalScriptsBlock = additionalScriptsBlock,
         beforeContentBlock = beforeContentBlock,
         serviceNavigationItems = serviceNavigationItems

@@ -48,7 +48,7 @@ class FullWidthMainContentSpec extends BaseSpec:
 
     "have all template methods implemented" in
       forAll {
-        (str: String) =>
-          component.render(Html(str)) shouldBe component.ref.f(Html(str))
+        (contentBlock: String) =>
+          component.render(Html(contentBlock)) shouldBe component.ref.f(Html(contentBlock))
       }
   }

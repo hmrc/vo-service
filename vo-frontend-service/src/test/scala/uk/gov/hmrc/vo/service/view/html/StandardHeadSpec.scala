@@ -41,31 +41,31 @@ class StandardHeadSpec extends BaseAppSpec:
 
   private val timeoutDialogStart = """<meta name="hmrc-timeout-dialog" content="hmrc-timeout-dialog" """
 
-  "FullWidthMainContent" should {
+  "StandardHead" should {
     "render as expected when given all parameters" in {
-      val content                   = """<link href="stylesheet/extra-cool.css" media="all" rel="stylesheet" type="text/css" />"""
+      val content                   = """<link href="/stylesheet/extra-cool.css" media="all" rel="stylesheet" type="text/css" />"""
       val additionalHeadBlock: Html = Html(content)
 
-      val result = component(Some("/stylesheet/file.css"), Some(additionalHeadBlock)).body.trimEmptyLines(" ")
+      val result = component(Some(additionalHeadBlock)).body.trimEmptyLines(" ")
 
-      result should include("""<link href="/stylesheet/file.css" media="all" rel="stylesheet" type="text/css" />""")
+      result should include("""<link href="/service-root/assets/stylesheets/app.min.css" media="all" rel="stylesheet" type="text/css" />""")
       result should include(content)
       result should include(timeoutDialogStart)
     }
 
     "render as expected when given all parameters and empty config" in {
-      val content                   = """<link href="stylesheet/extra-cool.css" media="all" rel="stylesheet" type="text/css" />"""
+      val content                   = """<link href="/stylesheet/extra-cool.css" media="all" rel="stylesheet" type="text/css" />"""
       val additionalHeadBlock: Html = Html(content)
 
-      val result = componentForEmptyConfig(Some("/stylesheet/file2.css"), Some(additionalHeadBlock)).body.trimEmptyLines(" ")
+      val result = componentForEmptyConfig(Some(additionalHeadBlock)).body.trimEmptyLines(" ")
 
-      result    should include("""<link href="/stylesheet/file2.css" media="all" rel="stylesheet" type="text/css" />""")
       result    should include(content)
+      result shouldNot include("""<link href="/service-root/assets/stylesheets/app.min.css" media="all" rel="stylesheet" type="text/css" />""")
       result shouldNot include(timeoutDialogStart)
     }
 
     "render as expected when all parameters are None" in {
-      component(None).body.trim.trimEmptyLines(" ") should include("""<meta name="hmrc-timeout-dialog" content="hmrc-timeout-dialog" """)
+      component().body.trim.trimEmptyLines(" ") should include(timeoutDialogStart)
     }
 
     "render as expected when all parameters are None and empty config" in {
@@ -74,8 +74,8 @@ class StandardHeadSpec extends BaseAppSpec:
 
     "have all template methods implemented" in
       forAll {
-        (str1: String, str2: String) =>
-          component.render(Option(str1), Option(Html(str2)), request, messages) shouldBe
-            component.ref.f(Option(str1), Option(Html(str2)))(request, messages)
+        (additionalHeadBlock: String) =>
+          component.render(Option(Html(additionalHeadBlock)), request, messages) shouldBe
+            component.ref.f(Option(Html(additionalHeadBlock)))(request, messages)
       }
   }
