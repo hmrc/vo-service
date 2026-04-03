@@ -17,10 +17,7 @@
 package uk.gov.hmrc.vo.service.config
 
 import play.api.Configuration
-import play.api.i18n.Messages
 import play.api.mvc.Call
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.notificationbanner.NotificationBanner
 
 /**
   * @author Yuriy Tumakha
@@ -28,36 +25,29 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.notificationbanner.Notificatio
 trait VOServiceConfig extends LangCodes with StandardPageConfig with TimeoutDialogConfig:
 
   def configuration: Configuration
-  def serviceID: String
-  def serviceHome: Call
+  def serviceMenuHome: Call
+  def theFirstPage: Call
   def serviceMenuSignOut: Option[Call]              = None
-  def serviceFeedback: Call                         = feedbackFrontendForm
-  def serviceLocalRoot: Call                        = serviceHome
-  def timeoutDialogEnabledExcept: Seq[Call]         = Seq.empty
+  def feedbackPage: Call                            = feedbackFrontendForm
+  def serviceLocalRoot: Call                        = serviceMenuHome
+  def notificationBannerEnabledOn: Set[Call]        = Set(serviceMenuHome, theFirstPage)
+  def timeoutDialogEnabledExcept: Set[Call]         = Set.empty
   override def isWelshTranslationAvailable: Boolean = false
+
+  /**
+    * Get required String config without throwing an exception when not found.
+    */
+  def getRequiredString(path: String): String = configuration.getOptional[String](path).getOrElse(s"Config:$path")
+
+  val serviceID: String = getRequiredString("service.id")
 
   /**
     * "platform.frontend.host" is defined only in the cloud environment.
     */
   val platformFrontendHost: Option[String] = configuration.getOptional[String]("platform.frontend.host")
 
-  // Feedback frontend
+  // Feedback frontend - start
   private val localFeedbackBase          = "http://localhost:9514"
   private val feedbackBase: String       = platformFrontendHost.getOrElse(localFeedbackBase)
   private val feedbackFrontendForm: Call = Call("GET", s"$feedbackBase/feedback/$serviceID")
-
-  // Notification Banner
-  private def buildNotificationBanner(lang: String): NotificationBanner =
-    NotificationBanner(
-      content = HtmlContent("<p class='govuk-notification-banner__heading'>" + configuration.get[String](s"bannerNotice.$lang.body") + "</p>"),
-      title = Text(configuration.get[String](s"bannerNotice.$lang.title"))
-    )
-
-  val isNotificationBannerEnabled: Boolean = configuration.getOptional[Boolean]("bannerNotice.enabled").getOrElse(false)
-
-  private val notificationBannerMap: Map[String, NotificationBanner] =
-    if isNotificationBannerEnabled then
-      langCodes.map(lang => lang -> buildNotificationBanner(lang)).toMap[String, NotificationBanner]
-    else Map.empty
-
-  def notificationBanner(using messages: Messages): NotificationBanner = notificationBannerMap(lang)
+  // Feedback frontend - end

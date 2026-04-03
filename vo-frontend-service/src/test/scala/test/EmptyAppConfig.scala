@@ -26,10 +26,9 @@ import uk.gov.hmrc.vo.service.config.VOServiceConfig
 
 object EmptyAppConfig extends VOServiceConfig:
 
-  def configuration: Configuration = Configuration.empty
+  override def configuration: Configuration = Configuration.empty
 
-  def serviceID: String = "SomeServiceID"
-
-  def serviceHome: Call = Call("GET", "/some-service-root/home")
+  def serviceMenuHome: Call = Call("GET", "/some-service-root/home")
+  def theFirstPage: Call    = Call("GET", "/some-service-root/first")
 
   override def stylesheet: Option[Call] = None

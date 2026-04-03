@@ -19,7 +19,9 @@ package uk.gov.hmrc.vo.service.config
 import play.api.i18n.Messages
 import play.api.mvc.{Call, RequestHeader}
 import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.Aliases.{BackLink, ServiceNavigation, ServiceNavigationItem}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{BackLink, HtmlContent, ServiceNavigation, ServiceNavigationItem}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.notificationbanner.NotificationBanner
 import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{Banners, HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
 import uk.gov.hmrc.vo.service.config.VOServiceConfig
@@ -42,7 +44,7 @@ trait StandardPageConfig:
   def homePageUrl(using messages: Messages): Option[String] = configuration.getOptional[String](s"service.homePageUrl.$lang")
 
   def serviceUrls(using messages: Messages) = ServiceURLs(
-    serviceUrl = homePageUrl.orElse(Some(serviceHome.url)),
+    serviceUrl = homePageUrl.orElse(Some(serviceMenuHome.url)),
     signOutUrl = serviceMenuSignOut.map(_.url)
   )
 
@@ -65,7 +67,7 @@ trait StandardPageConfig:
       serviceURLs = serviceUrls,
       banners = Banners(
         displayHmrcBanner = request.path == serviceLocalRoot.url,
-        phaseBanner = Option.when(request.path != serviceFeedback.url)(StandardBetaBanner()(serviceFeedback.url))
+        phaseBanner = Option.when(request.path != feedbackPage.url)(StandardBetaBanner()(feedbackPage.url))
       ),
       templateOverrides = TemplateOverrides(
         additionalHeadBlock = additionalHeadBlock,
@@ -75,3 +77,25 @@ trait StandardPageConfig:
       ),
       serviceNavigation = Option(serviceNavigationItems).filter(_.nonEmpty).map(ServiceNavigation(serviceName, serviceUrls.serviceUrl, _))
     )
+
+  // Notification Banner - start
+  private def buildNotificationBanner(lang: String): NotificationBanner =
+    NotificationBanner(
+      content = HtmlContent("<p class='govuk-notification-banner__heading'>" + configuration.get[String](s"bannerNotice.$lang.body") + "</p>"),
+      title = Text(configuration.get[String](s"bannerNotice.$lang.title"))
+    )
+
+  val isNotificationBannerEnabled: Boolean = configuration.getOptional[Boolean]("bannerNotice.enabled").getOrElse(false)
+
+  private val notificationBannerMap: Map[String, NotificationBanner] =
+    if isNotificationBannerEnabled then
+      langCodes.map(lang => lang -> buildNotificationBanner(lang)).toMap[String, NotificationBanner]
+    else Map.empty
+
+  def notificationBanner(using messages: Messages): NotificationBanner = notificationBannerMap(lang)
+
+  private lazy val notificationBannerPage: Set[String] = notificationBannerEnabledOn.map(_.url)
+
+  def showNotificationBanner(using request: RequestHeader): Boolean =
+    isNotificationBannerEnabled && notificationBannerPage(request.path)
+  // Notification Banner - end

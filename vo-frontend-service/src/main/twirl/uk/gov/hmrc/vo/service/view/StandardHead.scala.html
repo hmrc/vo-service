@@ -29,7 +29,7 @@
 }
 @if(appConfig.isTimeoutDialogEnabled) {
 @hmrcTimeoutDialogHelper(
-    signOutUrl = appConfig.signOutCall.getOrElse(appConfig.serviceHome).url,
+    signOutUrl = appConfig.signOutCall.getOrElse(appConfig.serviceMenuHome).url,
     keepAliveUrl = appConfig.keepAliveCall.map(_.url),
     timeoutUrl = appConfig.timeoutCall.map(_.url)
 )

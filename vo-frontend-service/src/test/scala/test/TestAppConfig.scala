@@ -28,13 +28,13 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class TestAppConfig @Inject() (val configuration: Configuration) extends VOServiceConfig:
 
-  override def serviceID: String                    = "TestServiceID"
-  override def serviceLocalRoot: Call               = Call("GET", "/service-root")
-  override def serviceHome: Call                    = Call("GET", "/service-root/home")
-  override def serviceFeedback: Call                = Call("GET", "/service-root/feedback")
+  override def serviceLocalRoot: Call = Call("GET", "/service-root")
+  override def serviceMenuHome: Call  = Call("GET", "/service-root/home")
+  override def theFirstPage: Call     = Call("GET", "/service-root/first")
+  override def feedbackPage: Call     = Call("GET", "/service-root/feedback")
+
   override def isWelshTranslationAvailable: Boolean = true
   override def stylesheet: Option[Call]             = Some(Call("GET", "/service-root/assets/stylesheets/app.min.css"))
 
-  override def timeoutDialogEnabledExcept: Seq[Call] = Seq(
-    serviceHome
-  )
+  override def notificationBannerEnabledOn: Set[Call] = Set(theFirstPage)
+  override def timeoutDialogEnabledExcept: Set[Call]  = Set(serviceMenuHome)

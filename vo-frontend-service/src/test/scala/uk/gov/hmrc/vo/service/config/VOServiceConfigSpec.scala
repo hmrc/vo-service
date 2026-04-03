@@ -16,8 +16,11 @@
 
 package uk.gov.hmrc.vo.service.config
 
+import play.api.Configuration
 import play.api.i18n.Messages
 import play.api.mvc.{Call, RequestHeader}
+import play.api.test.FakeRequest
+import play.api.test.Helpers.*
 import play.twirl.api.Html
 import test.EmptyAppConfig
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ServiceNavigation, ServiceNavigationItem}
@@ -42,20 +45,25 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
       voServiceConfig.serviceID shouldBe "TestServiceID"
     }
 
+    ".getRequiredString returns a String config without throwing an exception when not found" in {
+      voServiceConfig.getRequiredString("service.id")         shouldBe "TestServiceID"
+      voServiceConfig.getRequiredString("some.service.param") shouldBe "Config:some.service.param"
+    }
+
     "return serviceLocalRoot url" in {
       voServiceConfig.serviceLocalRoot.url shouldBe "/service-root"
     }
 
-    "return serviceHome url" in {
-      voServiceConfig.serviceHome.url shouldBe "/service-root/home"
+    "return serviceMenuHome url" in {
+      voServiceConfig.serviceMenuHome.url shouldBe "/service-root/home"
     }
 
     "return serviceMenuSignOut url" in {
       voServiceConfig.serviceMenuSignOut shouldBe None
     }
 
-    "return serviceFeedback url" in {
-      voServiceConfig.serviceFeedback.url shouldBe "/service-root/feedback"
+    "return feedbackPage url" in {
+      voServiceConfig.feedbackPage.url shouldBe "/service-root/feedback"
     }
 
     "return true for isWelshTranslationAvailable" in {
@@ -78,6 +86,21 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
       voServiceConfig.isNotificationBannerEnabled shouldBe true
     }
 
+    "return true for showNotificationBanner on theFirstPage" in {
+      given RequestHeader = FakeRequest(GET, voServiceConfig.theFirstPage.url)
+      voServiceConfig.showNotificationBanner shouldBe true
+    }
+
+    "return false for showNotificationBanner on feedback page" in {
+      given RequestHeader = FakeRequest(GET, voServiceConfig.feedbackPage.url)
+      voServiceConfig.showNotificationBanner shouldBe false
+    }
+
+    "return false for showNotificationBanner on random page" in {
+      given RequestHeader = FakeRequest(GET, "/service-root/some-page")
+      voServiceConfig.showNotificationBanner shouldBe false
+    }
+
     "build NotificationBanner" in {
       given Messages = messagesApi.preferred(Seq.empty)
 
@@ -88,20 +111,63 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
         )
     }
 
-    "return empty sequence timeoutDialogEnabledExcept" in {
-      voServiceConfig.timeoutDialogEnabledExcept shouldBe Seq(voServiceConfig.serviceHome)
+    "return notificationBannerEnabledOn pages" in {
+      voServiceConfig.notificationBannerEnabledOn shouldBe Set(voServiceConfig.theFirstPage)
+    }
+
+    "return timeoutDialogEnabledExcept pages" in {
+      voServiceConfig.timeoutDialogEnabledExcept shouldBe Set(voServiceConfig.serviceMenuHome)
     }
 
     "handle empty Configuration" in {
       val voServiceConfig = EmptyAppConfig
 
       voServiceConfig.isWelshTranslationAvailable shouldBe false
-      voServiceConfig.serviceID                   shouldBe "SomeServiceID"
+      voServiceConfig.serviceID                   shouldBe "Config:service.id"
       voServiceConfig.serviceLocalRoot.url        shouldBe "/some-service-root/home"
-      voServiceConfig.serviceHome.url             shouldBe "/some-service-root/home"
-      voServiceConfig.serviceFeedback.url         shouldBe "http://localhost:9514/feedback/SomeServiceID"
+      voServiceConfig.serviceMenuHome.url         shouldBe "/some-service-root/home"
+      voServiceConfig.feedbackPage.url            shouldBe "http://localhost:9514/feedback/Config:service.id"
       voServiceConfig.stylesheet                  shouldBe None
       voServiceConfig.langCodes                   shouldBe Set(en)
+
+      voServiceConfig.notificationBannerEnabledOn shouldBe Set(voServiceConfig.serviceMenuHome, voServiceConfig.theFirstPage)
+      voServiceConfig.timeoutDialogEnabledExcept  shouldBe empty
+
+      val theFirstPage = FakeRequest(GET, voServiceConfig.theFirstPage.url)
+      val randomPage   = FakeRequest(GET, "/service-root/some-page")
+
+      voServiceConfig.isTimeoutDialogEnabled(using theFirstPage) shouldBe false
+      voServiceConfig.showNotificationBanner(using theFirstPage) shouldBe false
+
+      voServiceConfig.isTimeoutDialogEnabled(using randomPage) shouldBe false
+      voServiceConfig.showNotificationBanner(using randomPage) shouldBe false
+    }
+
+    "handle empty Configuration but bannerNotice.enabled = true" in {
+      val voServiceConfig =
+        new VOServiceConfig:
+          override def configuration: Configuration = Configuration(
+            "bannerNotice.enabled"  -> true,
+            "bannerNotice.en.title" -> "Important",
+            "bannerNotice.en.body"  -> "Some notice"
+          )
+          override def stylesheet: Option[Call]     = None
+          def serviceMenuHome: Call                 = Call("GET", "/some-service-root/home")
+          def theFirstPage: Call                    = Call("GET", "/some-service-root/first")
+
+      voServiceConfig.theFirstPage.url shouldBe "/some-service-root/first"
+
+      voServiceConfig.notificationBannerEnabledOn shouldBe Set(voServiceConfig.serviceMenuHome, voServiceConfig.theFirstPage)
+      voServiceConfig.timeoutDialogEnabledExcept  shouldBe empty
+
+      val theFirstPage = FakeRequest(GET, voServiceConfig.theFirstPage.url)
+      val randomPage   = FakeRequest(GET, "/service-root/some-page")
+
+      voServiceConfig.isTimeoutDialogEnabled(using theFirstPage) shouldBe false
+      voServiceConfig.showNotificationBanner(using theFirstPage) shouldBe true
+
+      voServiceConfig.isTimeoutDialogEnabled(using randomPage) shouldBe false
+      voServiceConfig.showNotificationBanner(using randomPage) shouldBe false
     }
 
     "build HmrcStandardPageParams" in {
