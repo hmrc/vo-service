@@ -21,7 +21,6 @@ import play.api.mvc.RequestHeader
 import play.twirl.api.Html
 import test.EmptyAppConfig
 import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcTimeoutDialogHelper
-import uk.gov.hmrc.vo.service.config.VOServiceConfig
 import uk.gov.hmrc.vo.unit.test.BaseAppSpec
 
 /**
@@ -33,7 +32,7 @@ class StandardHeadSpec extends BaseAppSpec:
   extension (string: String)
     def trimEmptyLines(replaceWith: String = ""): String = string.replace("\n", replaceWith).replace("\r", replaceWith)
 
-  private val component               = StandardHead(inject[VOServiceConfig], inject[HmrcTimeoutDialogHelper])
+  private val component               = inject[StandardHead]
   private val componentForEmptyConfig = StandardHead(EmptyAppConfig, inject[HmrcTimeoutDialogHelper])
 
   given request: RequestHeader = getRequest

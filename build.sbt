@@ -26,6 +26,7 @@ lazy val voFrontendService = Project("vo-frontend-service", file("vo-frontend-se
   .enablePlugins(SbtTwirl)
   .settings(
     TwirlKeys.templateImports ++= templateImports,
+    TwirlKeys.constructorAnnotations += "@javax.inject.Inject()",
     Compile / TwirlKeys.compileTemplates / sourceDirectories += baseDirectory.value / "src/main/twirl",
     libraryDependencies ++= LibDependencies.frontendDependencies
   )

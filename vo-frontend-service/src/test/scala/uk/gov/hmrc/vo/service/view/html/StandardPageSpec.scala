@@ -19,11 +19,6 @@ package uk.gov.hmrc.vo.service.view.html
 import play.api.i18n.Messages
 import play.api.mvc.RequestHeader
 import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.html.components.{GovukBackLink, GovukLayout, TwoThirdsMainContent}
-import uk.gov.hmrc.hmrcfrontend.views.config.HmrcFooterItems
-import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcFooter
-import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcHead, HmrcScripts, HmrcStandardHeader, HmrcStandardPage, HmrcTimeoutDialogHelper}
-import uk.gov.hmrc.vo.service.config.VOServiceConfig
 import uk.gov.hmrc.vo.unit.test.BaseAppSpec
 
 /**
@@ -31,21 +26,7 @@ import uk.gov.hmrc.vo.unit.test.BaseAppSpec
   */
 class StandardPageSpec extends BaseAppSpec:
 
-  private val customFooterPage = CustomFooterPage(
-    inject[HmrcStandardHeader],
-    inject[HmrcHead],
-    inject[HmrcFooter],
-    inject[HmrcFooterItems],
-    inject[HmrcScripts],
-    inject[TwoThirdsMainContent],
-    inject[GovukBackLink],
-    inject[GovukLayout]
-  )
-
-  private val standardHead = StandardHead(inject[VOServiceConfig], inject[HmrcTimeoutDialogHelper])
-
-  private val component: StandardPage =
-    StandardPage(inject[VOServiceConfig], inject[HmrcStandardPage], standardHead, customFooterPage)
+  private val component: StandardPage = inject[StandardPage]
 
   given request: RequestHeader = getRequest
   given messages: Messages     = messagesApi.preferred(Seq.empty)
