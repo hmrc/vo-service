@@ -34,12 +34,16 @@ trait VOServiceConfig extends LangCodes with StandardPageConfig with TimeoutDial
   def timeoutDialogEnabledExcept: Set[Call]         = Set.empty
   override def isWelshTranslationAvailable: Boolean = false
 
-  /**
-    * Get required String config without throwing an exception when not found.
-    */
-  def getRequiredString(path: String): String = configuration.getOptional[String](path).getOrElse(s"Config:$path")
+  def getString(path: String, default: String => String = path => s"Config:$path"): String =
+    configuration.getOptional[String](path).getOrElse(default(path))
 
-  val serviceID: String = getRequiredString("service.id")
+  def getInt(path: String, default: Int = 1): Int =
+    configuration.getOptional[Int](path).getOrElse(default)
+
+  def getBoolean(path: String, default: Boolean = false): Boolean =
+    configuration.getOptional[Boolean](path).getOrElse(default)
+
+  val serviceID: String = getString("service.id")
 
   /**
     * "platform.frontend.host" is defined only in the cloud environment.

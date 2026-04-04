@@ -45,9 +45,20 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
       voServiceConfig.serviceID shouldBe "TestServiceID"
     }
 
-    ".getRequiredString returns a String config without throwing an exception when not found" in {
-      voServiceConfig.getRequiredString("service.id")         shouldBe "TestServiceID"
-      voServiceConfig.getRequiredString("some.service.param") shouldBe "Config:some.service.param"
+    ".getString returns a String config without throwing an exception when not found" in {
+      voServiceConfig.getString("service.id")         shouldBe "TestServiceID"
+      voServiceConfig.getString("some.service.param") shouldBe "Config:some.service.param"
+    }
+
+    ".getInt returns default value for numeric config without throwing an exception when not found" in {
+      voServiceConfig.getInt("some.number.with.default", 8080) shouldBe 8080
+      voServiceConfig.getInt("some.unknown.number")            shouldBe 1
+    }
+
+    ".getBoolean returns a Boolean config without throwing an exception when not found" in {
+      voServiceConfig.getBoolean("bannerNotice.enabled") shouldBe true
+      voServiceConfig.getBoolean("some.boolean", true)   shouldBe true
+      voServiceConfig.getBoolean("some.boolean")         shouldBe false
     }
 
     "return serviceLocalRoot url" in {

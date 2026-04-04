@@ -85,7 +85,7 @@ trait StandardPageConfig:
       title = Text(configuration.get[String](s"bannerNotice.$lang.title"))
     )
 
-  val isNotificationBannerEnabled: Boolean = configuration.getOptional[Boolean]("bannerNotice.enabled").getOrElse(false)
+  val isNotificationBannerEnabled: Boolean = getBoolean("bannerNotice.enabled")
 
   private val notificationBannerMap: Map[String, NotificationBanner] =
     if isNotificationBannerEnabled then
