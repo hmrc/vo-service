@@ -17,6 +17,8 @@
 package uk.gov.hmrc.vo.service.config
 
 import play.api.mvc.RequestHeader
+import play.api.test.FakeRequest
+import play.api.test.Helpers.GET
 import test.EmptyAppConfig
 import uk.gov.hmrc.vo.unit.test.BaseAppSpec
 
@@ -27,10 +29,10 @@ class TimeoutDialogConfigSpec extends BaseAppSpec:
 
   private val voServiceConfig = inject[VOServiceConfig]
 
-  given request: RequestHeader = getRequest
-
   "TimeoutDialogConfig" should {
     "have enabled TimeoutDialog" in {
+      given request: RequestHeader = FakeRequest(GET, "/service-root/some-page")
+
       voServiceConfig.isTimeoutDialogEnabled shouldBe true
     }
 
@@ -43,10 +45,14 @@ class TimeoutDialogConfigSpec extends BaseAppSpec:
     }
 
     "return timeoutCall" in {
+      given request: RequestHeader = FakeRequest(GET, "/service-root/some-page")
+
       voServiceConfig.timeoutCall shouldBe None
     }
 
     "handle empty config" in {
+      given request: RequestHeader = FakeRequest(GET, "/service-root/some-page")
+
       val voServiceConfig = EmptyAppConfig
 
       voServiceConfig.isTimeoutDialogEnabled shouldBe false

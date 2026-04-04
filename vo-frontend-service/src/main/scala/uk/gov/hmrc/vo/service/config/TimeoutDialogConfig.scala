@@ -28,7 +28,7 @@ trait TimeoutDialogConfig:
   private lazy val timeoutDialogEnabledExclusions: Set[String] = (Set(serviceLocalRoot, serviceMenuHome, theFirstPage) ++ timeoutDialogEnabledExcept).map(_.url)
 
   def isTimeoutDialogEnabled(using request: RequestHeader): Boolean =
-    timeoutDialogEnabledExcept.nonEmpty && !timeoutDialogEnabledExclusions(request.path)
+    timeoutDialogEnabledExcept.nonEmpty && !timeoutDialogEnabledExclusions.exists(_.startsWith(request.path))
 
   /**
     * Required when the TimeoutDialog is enabled.

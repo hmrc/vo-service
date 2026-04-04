@@ -18,6 +18,8 @@ package uk.gov.hmrc.vo.service.view.html
 
 import play.api.i18n.Messages
 import play.api.mvc.RequestHeader
+import play.api.test.FakeRequest
+import play.api.test.Helpers.GET
 import play.twirl.api.Html
 import test.EmptyAppConfig
 import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcTimeoutDialogHelper
@@ -35,7 +37,7 @@ class StandardHeadSpec extends BaseAppSpec:
   private val component               = inject[StandardHead]
   private val componentForEmptyConfig = StandardHead(EmptyAppConfig, inject[HmrcTimeoutDialogHelper])
 
-  given request: RequestHeader = getRequest
+  given request: RequestHeader = FakeRequest(GET, "/service-root/some-page")
   given messages: Messages     = messagesApi.preferred(Seq.empty)
 
   private val timeoutDialogStart = """<meta name="hmrc-timeout-dialog" content="hmrc-timeout-dialog" """
