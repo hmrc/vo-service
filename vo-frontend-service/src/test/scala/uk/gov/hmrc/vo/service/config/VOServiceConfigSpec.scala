@@ -70,7 +70,7 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
     }
 
     "return serviceMenuSignOut url" in {
-      voServiceConfig.serviceMenuSignOut shouldBe None
+      voServiceConfig.serviceMenuSignOut.value.url shouldBe "/service-root/logout"
     }
 
     "return feedbackPage url" in {
@@ -138,6 +138,7 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
       voServiceConfig.serviceLocalRoot.url        shouldBe "/some-service-root/home"
       voServiceConfig.serviceMenuHome.url         shouldBe "/some-service-root/home"
       voServiceConfig.feedbackPage.url            shouldBe "http://localhost:9514/feedback/Config:service.id"
+      voServiceConfig.serviceMenuSignOut          shouldBe None
       voServiceConfig.stylesheet                  shouldBe None
       voServiceConfig.langCodes                   shouldBe Set(en)
 

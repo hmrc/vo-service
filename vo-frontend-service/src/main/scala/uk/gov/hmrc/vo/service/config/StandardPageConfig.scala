@@ -43,9 +43,9 @@ trait StandardPageConfig:
 
   def homePageUrl(using messages: Messages): Option[String] = configuration.getOptional[String](s"service.homePageUrl.$lang")
 
-  def serviceUrls(using messages: Messages) = ServiceURLs(
+  def serviceUrls(using request: RequestHeader, messages: Messages) = ServiceURLs(
     serviceUrl = homePageUrl.orElse(Some(serviceMenuHome.url)),
-    signOutUrl = serviceMenuSignOut.map(_.url)
+    signOutUrl = serviceMenuSignOut.filter(_ => isTimeoutDialogEnabled).map(_.url)
   )
 
   def pageParams(
