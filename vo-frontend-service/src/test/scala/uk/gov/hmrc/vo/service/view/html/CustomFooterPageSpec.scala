@@ -19,7 +19,7 @@ package uk.gov.hmrc.vo.service.view.html
 import play.api.i18n.Messages
 import play.api.mvc.RequestHeader
 import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.Aliases.{BackLink, HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.HmrcStandardPageParams
 import uk.gov.hmrc.vo.unit.test.BaseAppSpec
 
@@ -45,26 +45,6 @@ class CustomFooterPageSpec extends BaseAppSpec:
       result    should include("""<div class="govuk-footer__meta-custom">""")
       result    should include("""<p>Custom footer</p>""")
       result shouldNot include("""<link href="/service-root/assets/stylesheets/app.min.css" media="all" rel="stylesheet" type="text/css" />""")
-    }
-
-    "render BackLink" in {
-      val pageParams = HmrcStandardPageParams(pageTitle = Some("Page title"), backLink = Some(BackLink("/service/previous-page")))
-      val result     = component(pageParams, HtmlContent("<p>Custom footer</p>"))(Html(content)).body
-
-      result should include("""<a href="/service/previous-page" class="govuk-back-link">Back</a>""")
-      result should include("<title>Page title</title>")
-      result should include("""<div class="govuk-footer__meta-custom">""")
-      result should include("""<p>Custom footer</p>""")
-    }
-
-    "render BackLink with text 'BACK'" in {
-      val pageParams = HmrcStandardPageParams(pageTitle = Some("Page with BACK Link"), backLink = Some(BackLink("/service/previous-page", content = Text("BACK"))))
-      val result     = component(pageParams, HtmlContent("<p>Custom footer</p>"))(Html(content)).body
-
-      result should include("""<a href="/service/previous-page" class="govuk-back-link">BACK</a>""")
-      result should include("<title>Page with BACK Link</title>")
-      result should include("""<p>Custom footer</p>""")
-
     }
 
     "have all template methods implemented" in

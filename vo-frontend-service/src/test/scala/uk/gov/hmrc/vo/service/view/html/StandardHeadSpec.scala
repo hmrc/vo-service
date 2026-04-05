@@ -30,24 +30,20 @@ import uk.gov.hmrc.vo.unit.test.BaseAppSpec
   */
 class StandardHeadSpec extends BaseAppSpec:
 
-  // TODO: Move to vo-unit-test
-  extension (string: String)
-    def trimEmptyLines(replaceWith: String = ""): String = string.replace("\n", replaceWith).replace("\r", replaceWith)
-
   private val component               = inject[StandardHead]
   private val componentForEmptyConfig = StandardHead(EmptyAppConfig, inject[HmrcTimeoutDialogHelper])
 
   given request: RequestHeader = FakeRequest(GET, "/service-root/some-page")
   given messages: Messages     = messagesApi.preferred(Seq.empty)
 
-  private val timeoutDialogStart = """<meta name="hmrc-timeout-dialog" content="hmrc-timeout-dialog" """
+  private val timeoutDialogStart = """<meta name="hmrc-timeout-dialog""""
 
   "StandardHead" should {
     "render as expected when given all parameters" in {
       val content                   = """<link href="/stylesheet/extra-cool.css" media="all" rel="stylesheet" type="text/css" />"""
       val additionalHeadBlock: Html = Html(content)
 
-      val result = component(Some(additionalHeadBlock)).body.trimEmptyLines(" ")
+      val result = component(Some(additionalHeadBlock)).body
 
       result should include("""<link href="/service-root/assets/stylesheets/app.min.css" media="all" rel="stylesheet" type="text/css" />""")
       result should include(content)
@@ -58,7 +54,7 @@ class StandardHeadSpec extends BaseAppSpec:
       val content                   = """<link href="/stylesheet/extra-cool.css" media="all" rel="stylesheet" type="text/css" />"""
       val additionalHeadBlock: Html = Html(content)
 
-      val result = componentForEmptyConfig(Some(additionalHeadBlock)).body.trimEmptyLines(" ")
+      val result = componentForEmptyConfig(Some(additionalHeadBlock)).body
 
       result    should include(content)
       result shouldNot include("""<link href="/service-root/assets/stylesheets/app.min.css" media="all" rel="stylesheet" type="text/css" />""")
@@ -66,7 +62,7 @@ class StandardHeadSpec extends BaseAppSpec:
     }
 
     "render as expected when all parameters are None" in {
-      component().body.trim.trimEmptyLines(" ") should include(timeoutDialogStart)
+      component().body should include(timeoutDialogStart)
     }
 
     "render as expected when all parameters are None and empty config" in {

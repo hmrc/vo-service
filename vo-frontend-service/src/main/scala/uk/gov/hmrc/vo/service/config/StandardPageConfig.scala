@@ -67,7 +67,7 @@ trait StandardPageConfig:
       serviceURLs = serviceUrls,
       banners = Banners(
         displayHmrcBanner = request.path == serviceLocalRoot.url,
-        phaseBanner = Option.when(request.path != feedbackPage.url)(StandardBetaBanner()(feedbackPage.url))
+        phaseBanner = Option.when(isPhaseBannerEnabled && request.path != feedbackPage.url)(StandardBetaBanner()(feedbackPage.url))
       ),
       templateOverrides = TemplateOverrides(
         additionalHeadBlock = additionalHeadBlock,
@@ -78,14 +78,16 @@ trait StandardPageConfig:
       serviceNavigation = Option(serviceNavigationItems).filter(_.nonEmpty).map(ServiceNavigation(serviceName, serviceUrls.serviceUrl, _))
     )
 
+  val isPhaseBannerEnabled: Boolean = getBoolean("phaseBanner.enabled")
+
   // Notification Banner - start
   private def buildNotificationBanner(lang: String): NotificationBanner =
     NotificationBanner(
-      content = HtmlContent("<p class='govuk-notification-banner__heading'>" + configuration.get[String](s"bannerNotice.$lang.body") + "</p>"),
-      title = Text(configuration.get[String](s"bannerNotice.$lang.title"))
+      content = HtmlContent("<p class='govuk-notification-banner__heading'>" + configuration.get[String](s"notificationBanner.$lang.body") + "</p>"),
+      title = Text(configuration.get[String](s"notificationBanner.$lang.title"))
     )
 
-  val isNotificationBannerEnabled: Boolean = getBoolean("bannerNotice.enabled")
+  val isNotificationBannerEnabled: Boolean = getBoolean("notificationBanner.enabled")
 
   private val notificationBannerMap: Map[String, NotificationBanner] =
     if isNotificationBannerEnabled then

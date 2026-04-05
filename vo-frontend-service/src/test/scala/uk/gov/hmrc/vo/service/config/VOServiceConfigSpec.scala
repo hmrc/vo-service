@@ -56,9 +56,9 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
     }
 
     ".getBoolean returns a Boolean config without throwing an exception when not found" in {
-      voServiceConfig.getBoolean("bannerNotice.enabled") shouldBe true
-      voServiceConfig.getBoolean("some.boolean", true)   shouldBe true
-      voServiceConfig.getBoolean("some.boolean")         shouldBe false
+      voServiceConfig.getBoolean("notificationBanner.enabled") shouldBe true
+      voServiceConfig.getBoolean("some.boolean", true)         shouldBe true
+      voServiceConfig.getBoolean("some.boolean")               shouldBe false
     }
 
     "return serviceLocalRoot url" in {
@@ -91,6 +91,10 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
 
     "return None for platformFrontendHost" in {
       voServiceConfig.platformFrontendHost shouldBe None
+    }
+
+    "return true for isPhaseBannerEnabled" in {
+      voServiceConfig.isPhaseBannerEnabled shouldBe true
     }
 
     "return true for isNotificationBannerEnabled" in {
@@ -141,6 +145,7 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
       voServiceConfig.serviceMenuSignOut          shouldBe None
       voServiceConfig.stylesheet                  shouldBe None
       voServiceConfig.langCodes                   shouldBe Set(en)
+      voServiceConfig.isPhaseBannerEnabled        shouldBe false
 
       voServiceConfig.notificationBannerEnabledOn shouldBe Set(voServiceConfig.serviceMenuHome, voServiceConfig.theFirstPage)
       voServiceConfig.timeoutDialogEnabledExcept  shouldBe empty
@@ -155,13 +160,13 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
       voServiceConfig.showNotificationBanner(using randomPage) shouldBe false
     }
 
-    "handle empty Configuration but bannerNotice.enabled = true" in {
+    "handle empty Configuration but notificationBanner.enabled = true" in {
       val voServiceConfig =
         new VOServiceConfig:
           override def configuration: Configuration = Configuration(
-            "bannerNotice.enabled"  -> true,
-            "bannerNotice.en.title" -> "Important",
-            "bannerNotice.en.body"  -> "Some notice"
+            "notificationBanner.enabled"  -> true,
+            "notificationBanner.en.title" -> "Important",
+            "notificationBanner.en.body"  -> "Some notice"
           )
           override def stylesheet: Option[Call]     = None
           def serviceMenuHome: Call                 = Call("GET", "/some-service-root/home")

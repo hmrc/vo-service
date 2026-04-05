@@ -14,44 +14,83 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.Aliases.ServiceNavigationItem
+@import uk.gov.hmrc.govukfrontend.views.Aliases.{BackLink, ErrorSummary, ServiceNavigationItem}
+@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukBackLink, GovukErrorSummary, GovukNotificationBanner}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
 @import uk.gov.hmrc.vo.service.config.VOServiceConfig
+@import uk.gov.hmrc.vo.service.model.AccountInfo
 @import uk.gov.hmrc.vo.service.view.html.CustomFooterPage
 
 @this(
         appConfig: VOServiceConfig,
         hmrcStandardPage: HmrcStandardPage,
+        govukBackLink: GovukBackLink,
+        govukErrorSummary: GovukErrorSummary,
+        govukNotificationBanner: GovukNotificationBanner,
         standardHead: StandardHead,
         customFooterPage: CustomFooterPage
 )
 
 @(
         pageHeading: String,
+        accountInfo: Option[AccountInfo] = None,
         backLinkUrl: Option[String] = None,
+        errorSummary: Option[ErrorSummary] = None,
+        showNotificationBanner: Option[Boolean] = None,
+        sectionName: Option[String] = None,
+        showH1: Boolean = true,
         fullWidth: Boolean = false,
         additionalHeadBlock: Option[Html] = None,
         additionalScriptsBlock: Option[Html] = None,
-        beforeContentBlock: Option[Html] = None, // If specified, the backLink is ignored
         footerBlock: Option[Html] = None,
         serviceNavigationItems: Seq[ServiceNavigationItem] = Seq.empty
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
+@beforeContent = {
+    @accountInfo.map { account =>
+        @AccountInfoHeader(account)
+    }
+
+    @backLinkUrl.map { link =>
+        @govukBackLink(BackLink(link))
+    }
+}
+
+@contentWithHeading = {
+    @errorSummary.map { errors =>
+        @govukErrorSummary(errors)
+    }
+
+    @if(showNotificationBanner.getOrElse(appConfig.showNotificationBanner)) {
+        @govukNotificationBanner(appConfig.notificationBanner)
+    }
+
+    @sectionName.map { section =>
+        <span class="govuk-caption-m">@section</span>
+    }
+
+    @if(showH1) {
+        <h1 class="govuk-heading-l">@pageHeading</h1>
+    }
+
+    @contentBlock
+}
+
 @params = @{
     appConfig.pageParams(
-        pageHeading,
+        errorSummary.fold("")(_ => s"${messages("error.prefix")} ") + pageHeading,
         backLinkUrl,
         fullWidth = fullWidth,
         additionalHeadBlock = Some(standardHead(additionalHeadBlock)),
         additionalScriptsBlock = additionalScriptsBlock,
-        beforeContentBlock = beforeContentBlock,
+        beforeContentBlock = Option.when(accountInfo.isDefined || footerBlock.isDefined && backLinkUrl.isDefined)(beforeContent),
         serviceNavigationItems = serviceNavigationItems
     )
 }
 
 @footerBlock.map { footer =>
-    @customFooterPage(params, HtmlContent(footer))(contentBlock)
+    @customFooterPage(params, HtmlContent(footer))(contentWithHeading)
 }.getOrElse {
-    @hmrcStandardPage(params)(contentBlock)
+    @hmrcStandardPage(params)(contentWithHeading)
 }

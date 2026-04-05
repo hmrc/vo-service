@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukBackLink, GovukLayout, TwoThirdsMainContent}
+@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukLayout, TwoThirdsMainContent}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import uk.gov.hmrc.hmrcfrontend.views.config.HmrcFooterItems
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcFooter
@@ -29,7 +29,6 @@
         hmrcFooterItems: HmrcFooterItems,
         hmrcScripts: HmrcScripts,
         twoThirdsMainContent: TwoThirdsMainContent,
-        govukBackLink: GovukBackLink,
         govukLayout: GovukLayout
 )
 
@@ -52,12 +51,6 @@
     )
 }
 
-@beforeContent = {
-    @params.backLink.map { link =>
-        @govukBackLink(link)
-    }
-}
-
 @footerBlock = @{
     hmrcFooter(
         Footer(
@@ -76,7 +69,7 @@
     headBlock = Some(hmrcHead(headBlock = params.templateOverrides.additionalHeadBlock)),
     headerBlock = Some(headerBlock),
     scriptsBlock = Some(hmrcScripts(scriptsBlock = params.templateOverrides.additionalScriptsBlock)),
-    beforeContentBlock = params.templateOverrides.beforeContentBlock orElse Some(beforeContent),
+    beforeContentBlock = params.templateOverrides.beforeContentBlock,
     footerBlock = Some(footerBlock),
     mainContentLayout = params.templateOverrides.mainContentLayout orElse Some(twoThirdsMainContent(_)),
 )(contentBlock)
