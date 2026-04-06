@@ -25,6 +25,8 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{ErrorLink, ErrorSummary, Text}
 import uk.gov.hmrc.vo.service.model.AccountInfo
 import uk.gov.hmrc.vo.unit.test.BaseAppSpec
 
+import scala.language.implicitConversions
+
 /**
   * @author Yuriy Tumakha
   */
@@ -35,7 +37,7 @@ class StandardPageSpec extends BaseAppSpec:
   given request: RequestHeader = FakeRequest(GET, "/service-root/some-page")
   given messages: Messages     = messagesApi.preferred(Seq.empty)
 
-  private val content = """<p class="govuk-body">Some page content</p>"""
+  private val content: Html = """<p class="govuk-body">Some page content</p>"""
 
   "StandardPage" should {
     "render as expected when given all parameters" in {

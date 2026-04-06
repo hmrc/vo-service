@@ -23,6 +23,8 @@ import uk.gov.hmrc.vo.service.form.Scala3EnumFieldMapping.*
 import uk.gov.hmrc.vo.service.model.Scala3EnumJsonFormat
 import uk.gov.hmrc.vo.unit.test.BaseSpec
 
+import scala.language.implicitConversions
+
 /**
   * @author Yuriy Tumakha
   */
@@ -74,8 +76,8 @@ class Scala3EnumFieldMappingSpec extends BaseSpec:
       )
       val form = colorsForm.bind(data)
 
-      form.errors      shouldBe empty
-      form.value.value shouldBe ColorsPage(Red, Some(Blue), Seq(Green, Red))
+      form.errors    shouldBe empty
+      form.value.get shouldBe ColorsPage(Red, Some(Blue), Seq(Green, Red))
     }
 
     "bind minimal data without errors" in {
@@ -84,16 +86,16 @@ class Scala3EnumFieldMappingSpec extends BaseSpec:
       )
       val form = colorsForm.bind(data)
 
-      form.errors      shouldBe empty
-      form.value.value shouldBe ColorsPage(Green)
+      form.errors    shouldBe empty
+      form.value.get shouldBe ColorsPage(Green)
     }
 
     "fill form with ColorsPage value without errors" in {
       val value = ColorsPage(Red, Some(Blue), Seq(Green, Red))
       val form  = colorsForm.fillAndValidate(value)
 
-      form.errors      shouldBe empty
-      form.value.value shouldBe value
+      form.errors    shouldBe empty
+      form.value.get shouldBe value
     }
 
   }

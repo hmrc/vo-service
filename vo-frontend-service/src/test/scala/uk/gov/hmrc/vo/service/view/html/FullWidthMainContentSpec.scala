@@ -19,6 +19,8 @@ package uk.gov.hmrc.vo.service.view.html
 import play.twirl.api.Html
 import uk.gov.hmrc.vo.unit.test.BaseSpec
 
+import scala.language.implicitConversions
+
 /**
   * @author Yuriy Tumakha
   */

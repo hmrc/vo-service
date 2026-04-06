@@ -33,6 +33,8 @@ import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{Banners, Serv
 import uk.gov.hmrc.vo.service.view.html.*
 import uk.gov.hmrc.vo.unit.test.BaseAppSpec
 
+import scala.language.implicitConversions
+
 /**
   * @author Yuriy Tumakha
   */
@@ -70,7 +72,7 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
     }
 
     "return serviceMenuSignOut url" in {
-      voServiceConfig.serviceMenuSignOut.value.url shouldBe "/service-root/logout"
+      voServiceConfig.serviceMenuSignOut.get.url shouldBe "/service-root/logout"
     }
 
     "return feedbackPage url" in {
@@ -82,7 +84,7 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
     }
 
     "return stylesheet url" in {
-      voServiceConfig.stylesheet.value.url shouldBe "/service-root/assets/stylesheets/app.min.css"
+      voServiceConfig.stylesheet.get.url shouldBe "/service-root/assets/stylesheets/app.min.css"
     }
 
     "return langCodes" in {
@@ -204,10 +206,10 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
         Seq(ServiceNavigationItem(Text("Menu item 1"), "#"))
       )
 
-      standardPageParams.pageTitle.value             shouldBe "Page heading - service.name - gov.name"
-      standardPageParams.backLink.value              shouldBe BackLink("/back/link")
+      standardPageParams.pageTitle.get               shouldBe "Page heading - service.name - gov.name"
+      standardPageParams.backLink.get                shouldBe BackLink("/back/link")
       standardPageParams.isWelshTranslationAvailable shouldBe true
-      standardPageParams.serviceName.value           shouldBe "service.name"
+      standardPageParams.serviceName.get             shouldBe "service.name"
 
       standardPageParams.serviceURLs shouldBe ServiceURLs(
         serviceUrl = "/service-root/home"
@@ -218,14 +220,14 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
         phaseBanner = StandardBetaBanner()("/service-root/feedback")
       )
 
-      standardPageParams.templateOverrides.additionalHeadBlock.value    shouldBe Html("<head/>")
-      standardPageParams.templateOverrides.additionalScriptsBlock.value shouldBe Html("<script/>")
-      standardPageParams.templateOverrides.beforeContentBlock.value     shouldBe Html("<div>beforeContent</div>")
+      standardPageParams.templateOverrides.additionalHeadBlock.get    shouldBe Html("<head/>")
+      standardPageParams.templateOverrides.additionalScriptsBlock.get shouldBe Html("<script/>")
+      standardPageParams.templateOverrides.beforeContentBlock.get     shouldBe Html("<div>beforeContent</div>")
 
       val content = Html("<b>content</b>")
-      standardPageParams.templateOverrides.mainContentLayout.value(content) shouldBe FullWidthMainContent(content)
+      standardPageParams.templateOverrides.mainContentLayout.get(content) shouldBe FullWidthMainContent(content)
 
-      standardPageParams.serviceNavigation.value shouldBe ServiceNavigation(
+      standardPageParams.serviceNavigation.get shouldBe ServiceNavigation(
         "service.name",
         "/service-root/home",
         List(ServiceNavigationItem(Text("Menu item 1"), "#"))
@@ -238,10 +240,10 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
 
       val standardPageParams = voServiceConfig.pageParams("Simple page heading")
 
-      standardPageParams.pageTitle.value             shouldBe "Simple page heading - service.name - gov.name"
+      standardPageParams.pageTitle.get               shouldBe "Simple page heading - service.name - gov.name"
       standardPageParams.backLink                    shouldBe None
       standardPageParams.isWelshTranslationAvailable shouldBe true
-      standardPageParams.serviceName.value           shouldBe "service.name"
+      standardPageParams.serviceName.get             shouldBe "service.name"
 
       standardPageParams.serviceURLs shouldBe ServiceURLs(
         serviceUrl = Some("/service-root/home")

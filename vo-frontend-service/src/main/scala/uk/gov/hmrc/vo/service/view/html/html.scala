@@ -29,4 +29,4 @@ package object html:
 
   implicit def stringToHtml(str: String): Html = Html(str)
 
-  implicit def stringToOptHtml(str: String): Option[Html] = Html(str)
+  implicit def stringToOptHtml(str: String): Option[Html] = stringToHtml(str)

@@ -23,6 +23,8 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.HmrcStandardPageParams
 import uk.gov.hmrc.vo.unit.test.BaseAppSpec
 
+import scala.language.implicitConversions
+
 /**
   * @author Yuriy Tumakha
   */

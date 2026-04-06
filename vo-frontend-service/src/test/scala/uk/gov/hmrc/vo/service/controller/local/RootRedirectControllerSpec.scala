@@ -29,7 +29,7 @@ class RootRedirectControllerSpec extends BaseAppSpec:
   "RootRedirectController" should {
     "return redirect to service root" in {
       val result = controller.rootRedirect(getRequest)
-      status(result)                 shouldBe SEE_OTHER
-      redirectLocation(result).value shouldBe "/service-root"
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/service-root")
     }
   }

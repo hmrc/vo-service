@@ -25,6 +25,8 @@ import test.EmptyAppConfig
 import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcTimeoutDialogHelper
 import uk.gov.hmrc.vo.unit.test.BaseAppSpec
 
+import scala.language.implicitConversions
+
 /**
   * @author Yuriy Tumakha
   */
