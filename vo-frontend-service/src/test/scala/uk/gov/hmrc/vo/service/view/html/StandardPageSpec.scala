@@ -41,13 +41,13 @@ class StandardPageSpec extends BaseAppSpec:
     "render as expected when given all parameters" in {
       val result = component(
         "Page heading",
-        accountInfo = Some(AccountInfo("Account param 1", "Param 2")),
-        backLinkUrl = Some("/service/previous-page"),
-        errorSummary = Some(ErrorSummary(Seq(ErrorLink(Some("#field1"), Text("field1"))))),
-        showNotificationBanner = Some(true),
-        sectionName = Some("Section"),
+        accountInfo = AccountInfo("Account param 1", "Param 2"),
+        backLinkUrl = "/service/previous-page",
+        errorSummary = ErrorSummary(Seq(ErrorLink("#field1", Text("field1")))),
+        showNotificationBanner = true,
+        sectionName = "Section",
         fullWidth = true
-      )(Html(content)).body
+      )(content).body
 
       result    should include("<title>error.prefix Page heading - service.name - gov.name</title>")
       result    should include("""<span class="govuk-body-s">Account param 1</span>""")
@@ -67,8 +67,8 @@ class StandardPageSpec extends BaseAppSpec:
       val result = component(
         "Page with custom footer",
         showH1 = false,
-        footerBlock = Some(Html("<p>Custom footer</p>"))
-      )(Html(content)).body
+        footerBlock = "<p>Custom footer</p>"
+      )(content).body
 
       result    should include("<title>Page with custom footer - service.name - gov.name</title>")
       result shouldNot include("""<h1""")
@@ -81,7 +81,7 @@ class StandardPageSpec extends BaseAppSpec:
     "have all template methods implemented" in
       forAll {
         (pageHeading: String) =>
-          component.render(pageHeading, None, None, None, None, None, true, false, None, None, None, Seq.empty, Html(content), request, messages) shouldBe
-            component.ref.f(pageHeading, None, None, None, None, None, true, false, None, None, None, Seq.empty)(Html(content))(request, messages)
+          component.render(pageHeading, None, None, None, None, None, true, false, None, None, None, Seq.empty, content, request, messages) shouldBe
+            component.ref.f(pageHeading, None, None, None, None, None, true, false, None, None, None, Seq.empty)(content)(request, messages)
       }
   }

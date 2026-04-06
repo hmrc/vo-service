@@ -30,7 +30,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.notificationbanner.NotificationBanner
 import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{Banners, ServiceURLs}
-import uk.gov.hmrc.vo.service.view.html.FullWidthMainContent
+import uk.gov.hmrc.vo.service.view.html.*
 import uk.gov.hmrc.vo.unit.test.BaseAppSpec
 
 /**
@@ -103,16 +103,19 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
 
     "return true for showNotificationBanner on theFirstPage" in {
       given RequestHeader = FakeRequest(GET, voServiceConfig.theFirstPage.url)
+
       voServiceConfig.showNotificationBanner shouldBe true
     }
 
     "return false for showNotificationBanner on feedback page" in {
       given RequestHeader = FakeRequest(GET, voServiceConfig.feedbackPage.url)
+
       voServiceConfig.showNotificationBanner shouldBe false
     }
 
     "return false for showNotificationBanner on random page" in {
       given RequestHeader = FakeRequest(GET, "/service-root/some-page")
+
       voServiceConfig.showNotificationBanner shouldBe false
     }
 
@@ -193,11 +196,11 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
 
       val standardPageParams = voServiceConfig.pageParams(
         "Page heading",
-        Some("/back/link"),
+        "/back/link",
         true,
-        Some(Html("<head/>")),
-        Some(Html("<script/>")),
-        Some(Html("<div>beforeContent</div>")),
+        "<head/>",
+        "<script/>",
+        "<div>beforeContent</div>",
         Seq(ServiceNavigationItem(Text("Menu item 1"), "#"))
       )
 
@@ -207,12 +210,12 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
       standardPageParams.serviceName.value           shouldBe "service.name"
 
       standardPageParams.serviceURLs shouldBe ServiceURLs(
-        serviceUrl = Some("/service-root/home")
+        serviceUrl = "/service-root/home"
       )
 
       standardPageParams.banners shouldBe Banners(
         displayHmrcBanner = false,
-        phaseBanner = Some(StandardBetaBanner()("/service-root/feedback"))
+        phaseBanner = StandardBetaBanner()("/service-root/feedback")
       )
 
       standardPageParams.templateOverrides.additionalHeadBlock.value    shouldBe Html("<head/>")
@@ -223,8 +226,8 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
       standardPageParams.templateOverrides.mainContentLayout.value(content) shouldBe FullWidthMainContent(content)
 
       standardPageParams.serviceNavigation.value shouldBe ServiceNavigation(
-        Some("service.name"),
-        Some("/service-root/home"),
+        "service.name",
+        "/service-root/home",
         List(ServiceNavigationItem(Text("Menu item 1"), "#"))
       )
     }

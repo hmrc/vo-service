@@ -14,9 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.vo.service.model
+package uk.gov.hmrc.vo.service.view
+
+import play.twirl.api.Html
+
+import scala.language.implicitConversions
 
 /**
   * @author Yuriy Tumakha
   */
-case class AccountInfo(value1: String, value2: Option[String] = None)
+package object html:
+
+  implicit def toOpt[A](a: A): Option[A] = Some(a)
+
+  implicit def stringToHtml(str: String): Html = Html(str)
+
+  implicit def stringToOptHtml(str: String): Option[Html] = Html(str)

@@ -40,10 +40,9 @@ class StandardHeadSpec extends BaseAppSpec:
 
   "StandardHead" should {
     "render as expected when given all parameters" in {
-      val content                   = """<link href="/stylesheet/extra-cool.css" media="all" rel="stylesheet" type="text/css" />"""
-      val additionalHeadBlock: Html = Html(content)
+      val content = """<link href="/stylesheet/extra-cool.css" media="all" rel="stylesheet" type="text/css" />"""
 
-      val result = component(Some(additionalHeadBlock)).body
+      val result = component(content).body
 
       result should include("""<link href="/service-root/assets/stylesheets/app.min.css" media="all" rel="stylesheet" type="text/css" />""")
       result should include(content)
@@ -51,10 +50,9 @@ class StandardHeadSpec extends BaseAppSpec:
     }
 
     "render as expected when given all parameters and empty config" in {
-      val content                   = """<link href="/stylesheet/extra-cool.css" media="all" rel="stylesheet" type="text/css" />"""
-      val additionalHeadBlock: Html = Html(content)
+      val content = """<link href="/stylesheet/extra-cool.css" media="all" rel="stylesheet" type="text/css" />"""
 
-      val result = componentForEmptyConfig(Some(additionalHeadBlock)).body
+      val result = componentForEmptyConfig(content).body
 
       result    should include(content)
       result shouldNot include("""<link href="/service-root/assets/stylesheets/app.min.css" media="all" rel="stylesheet" type="text/css" />""")
@@ -72,7 +70,7 @@ class StandardHeadSpec extends BaseAppSpec:
     "have all template methods implemented" in
       forAll {
         (additionalHeadBlock: String) =>
-          component.render(Option(Html(additionalHeadBlock)), request, messages) shouldBe
-            component.ref.f(Option(Html(additionalHeadBlock)))(request, messages)
+          component.render(additionalHeadBlock, request, messages) shouldBe
+            component.ref.f(additionalHeadBlock)(request, messages)
       }
   }

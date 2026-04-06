@@ -33,12 +33,12 @@ class CustomFooterPageSpec extends BaseAppSpec:
   given request: RequestHeader = getRequest
   given messages: Messages     = messagesApi.preferred(Seq.empty)
 
-  private val pageParams = HmrcStandardPageParams(pageTitle = Some("Page title"), serviceName = Some("Service Name"))
+  private val pageParams = HmrcStandardPageParams(pageTitle = "Page title", serviceName = "Service Name")
   private val content    = """<h1 class="govuk-heading-xl">Page heading</h1><p class="govuk-body">Some page content</p>"""
 
   "CustomFooterPage" should {
     "render as expected when given all parameters" in {
-      val result = component(pageParams, HtmlContent("<p>Custom footer</p>"))(Html(content)).body
+      val result = component(pageParams, HtmlContent("<p>Custom footer</p>"))(content).body
 
       result    should include("<title>Page title</title>")
       result    should include("""Help using GOV.UK""")
@@ -50,8 +50,9 @@ class CustomFooterPageSpec extends BaseAppSpec:
     "have all template methods implemented" in
       forAll {
         (pageTitle: String, footer: String) =>
-          val params = HmrcStandardPageParams(pageTitle = Option(pageTitle), serviceName = Some("Service Name"))
-          component.render(params, HtmlContent(footer), Html(content), request, messages) shouldBe
-            component.ref.f(params, HtmlContent(footer))(Html(content))(request, messages)
+          val params = HmrcStandardPageParams(pageTitle = pageTitle, serviceName = "Service Name")
+
+          component.render(params, HtmlContent(footer), content, request, messages) shouldBe
+            component.ref.f(params, HtmlContent(footer))(content)(request, messages)
       }
   }

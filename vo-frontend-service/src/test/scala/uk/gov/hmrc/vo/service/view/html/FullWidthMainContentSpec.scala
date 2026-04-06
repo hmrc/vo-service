@@ -36,19 +36,18 @@ class FullWidthMainContentSpec extends BaseSpec:
 
   "FullWidthMainContent" should {
     "render as expected when given a contentBlock" in {
-      val content            = """<h1 class="govuk-heading-xl">Page heading</h1><p class="govuk-body">Some page content</p>"""
-      val contentBlock: Html = Html(content)
+      val content = """<h1 class="govuk-heading-xl">Page heading</h1><p class="govuk-body">Some page content</p>"""
 
-      component(contentBlock) shouldBe Html(expectedHtml(content))
+      component(content) shouldBe Html(expectedHtml(content))
     }
 
     "render an empty contentBlock" in {
-      component(Html("")) shouldBe Html(expectedHtml(""))
+      component("") shouldBe Html(expectedHtml(""))
     }
 
     "have all template methods implemented" in
       forAll {
         (contentBlock: String) =>
-          component.render(Html(contentBlock)) shouldBe component.ref.f(Html(contentBlock))
+          component.render(contentBlock) shouldBe component.ref.f(contentBlock)
       }
   }

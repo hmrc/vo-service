@@ -36,7 +36,7 @@ class AccountInfoHeaderSpec extends BaseAppSpec:
        |    </li>
        |        <li style="display: inline-block">
        |            <span class="govuk-body-s govuk-!-font-weight-bold">service.accountInfo.key2:</span>
-       |            <span class="govuk-body-s">${accountInfo.value2}</span>
+       |            <span class="govuk-body-s">${accountInfo.value2.getOrElse("")}</span>
        |        </li>
        |</ul>""".stripMargin
 
@@ -45,17 +45,19 @@ class AccountInfoHeaderSpec extends BaseAppSpec:
   "FullWidthMainContent" should {
     "render as expected account info" in {
       val account = AccountInfo("Param 1", "Param 2")
+
       component(account).body.trimEmptyLines shouldBe Html(expectedHtml(account)).body
     }
 
     "render only value1 if value2 is empty" in {
-      component(AccountInfo("Account param 1", "")).body should include("""<span class="govuk-body-s">Account param 1</span>""")
+      component(AccountInfo("Only param 1")).body should include("""<span class="govuk-body-s">Only param 1</span>""")
     }
 
     "have all template methods implemented" in
       forAll {
         (param1: String, param2: String) =>
           val account = AccountInfo(param1, param2)
+
           component.render(account, messages) shouldBe component.ref.f(account)(messages)
       }
   }

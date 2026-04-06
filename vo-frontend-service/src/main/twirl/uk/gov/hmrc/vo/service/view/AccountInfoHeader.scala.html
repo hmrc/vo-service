@@ -23,10 +23,10 @@
         <span class="govuk-body-s govuk-!-font-weight-bold">@messages("service.accountInfo.key1"):</span>
         <span class="govuk-body-s">@accountInfo.value1</span>
     </li>
-    @if(accountInfo.value2.nonEmpty) {
+    @accountInfo.value2.filter(_.nonEmpty).map { value2 =>
         <li style="display: inline-block">
             <span class="govuk-body-s govuk-!-font-weight-bold">@messages("service.accountInfo.key2"):</span>
-            <span class="govuk-body-s">@accountInfo.value2</span>
+            <span class="govuk-body-s">@value2</span>
         </li>
     }
 </ul>
