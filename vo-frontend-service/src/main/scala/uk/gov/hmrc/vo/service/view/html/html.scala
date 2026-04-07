@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@(mainContent: Html)
+package uk.gov.hmrc.vo.service.view
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        @mainContent
-    </div>
-</div>
+import play.twirl.api.Html
+
+import scala.language.implicitConversions
+
+/**
+  * @author Yuriy Tumakha
+  */
+package object html:
+
+  implicit def toOpt[A](a: A): Option[A] = Some(a)
+
+  implicit def stringToHtml(str: String): Html = Html(str)
+
+  implicit def stringToOptHtml(str: String): Option[Html] = stringToHtml(str)

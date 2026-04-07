@@ -1,0 +1,75 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukLayout, TwoThirdsMainContent}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+@import uk.gov.hmrc.hmrcfrontend.views.config.HmrcFooterItems
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcFooter
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcHead, HmrcScripts, HmrcStandardHeader}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.footer.{Footer, Meta}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.HmrcStandardPageParams
+
+@this(
+        hmrcStandardHeader: HmrcStandardHeader,
+        hmrcHead: HmrcHead,
+        hmrcFooter: HmrcFooter,
+        hmrcFooterItems: HmrcFooterItems,
+        hmrcScripts: HmrcScripts,
+        twoThirdsMainContent: TwoThirdsMainContent,
+        govukLayout: GovukLayout
+)
+
+@(
+        params: HmrcStandardPageParams,
+        footerContent: HtmlContent
+)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
+
+@headerBlock = @{
+    hmrcStandardHeader(
+        isWelshTranslationAvailable = params.isWelshTranslationAvailable,
+        serviceName = params.serviceName,
+        serviceUrl = params.serviceURLs.serviceUrl,
+        signOutUrl = params.serviceURLs.signOutUrl,
+        userResearchBanner = params.banners.userResearchBanner,
+        phaseBanner = params.banners.phaseBanner,
+        displayHmrcBanner = params.banners.displayHmrcBanner,
+        additionalBannersBlock = params.banners.additionalBannersBlock,
+        serviceNavigation = params.serviceNavigation
+    )
+}
+
+@footerBlock = @{
+    hmrcFooter(
+        Footer(
+            meta = Some(
+                Meta(
+                    content = footerContent,
+                    items = Some(hmrcFooterItems.get)
+                )
+            )
+        )
+    )
+}
+
+@govukLayout(
+    pageTitle = params.pageTitle,
+    headBlock = Some(hmrcHead(headBlock = params.templateOverrides.additionalHeadBlock)),
+    headerBlock = Some(headerBlock),
+    scriptsBlock = Some(hmrcScripts(scriptsBlock = params.templateOverrides.additionalScriptsBlock)),
+    beforeContentBlock = params.templateOverrides.beforeContentBlock,
+    footerBlock = Some(footerBlock),
+    mainContentLayout = params.templateOverrides.mainContentLayout orElse Some(twoThirdsMainContent(_)),
+)(contentBlock)

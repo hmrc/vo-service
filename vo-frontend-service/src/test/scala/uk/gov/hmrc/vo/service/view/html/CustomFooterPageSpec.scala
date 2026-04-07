@@ -1,0 +1,60 @@
+/*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package uk.gov.hmrc.vo.service.view.html
+
+import play.api.i18n.Messages
+import play.api.mvc.RequestHeader
+import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.HmrcStandardPageParams
+import uk.gov.hmrc.vo.unit.test.BaseAppSpec
+
+import scala.language.implicitConversions
+
+/**
+  * @author Yuriy Tumakha
+  */
+class CustomFooterPageSpec extends BaseAppSpec:
+
+  private val component = inject[CustomFooterPage]
+
+  given request: RequestHeader = getRequest
+  given messages: Messages     = messagesApi.preferred(Seq.empty)
+
+  private val pageParams = HmrcStandardPageParams(pageTitle = "Page title", serviceName = "Service Name")
+  private val content    = """<h1 class="govuk-heading-xl">Page heading</h1><p class="govuk-body">Some page content</p>"""
+
+  "CustomFooterPage" should {
+    "render as expected when given all parameters" in {
+      val result = component(pageParams, HtmlContent("<p>Custom footer</p>"))(content).body
+
+      result    should include("<title>Page title</title>")
+      result    should include("""Help using GOV.UK""")
+      result    should include("""<div class="govuk-footer__meta-custom">""")
+      result    should include("""<p>Custom footer</p>""")
+      result shouldNot include("""<link href="/service-root/assets/stylesheets/app.min.css" media="all" rel="stylesheet" type="text/css" />""")
+    }
+
+    "have all template methods implemented" in
+      forAll {
+        (pageTitle: String, footer: String) =>
+          val params = HmrcStandardPageParams(pageTitle = pageTitle, serviceName = "Service Name")
+
+          component.render(params, HtmlContent(footer), content, request, messages) shouldBe
+            component.ref.f(params, HtmlContent(footer))(content)(request, messages)
+      }
+  }

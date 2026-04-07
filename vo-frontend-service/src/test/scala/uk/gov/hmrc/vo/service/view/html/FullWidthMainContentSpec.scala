@@ -17,14 +17,16 @@
 package uk.gov.hmrc.vo.service.view.html
 
 import play.twirl.api.Html
-import uk.gov.hmrc.vo.unit.test.BaseAppSpec
+import uk.gov.hmrc.vo.unit.test.BaseSpec
+
+import scala.language.implicitConversions
 
 /**
   * @author Yuriy Tumakha
   */
-class FullWidthMainContentSpec extends BaseAppSpec:
+class FullWidthMainContentSpec extends BaseSpec:
 
-  private val component = inject[FullWidthMainContent]
+  private val component = FullWidthMainContent
 
   private def expectedHtml(content: String) = s"""
                                                  |<div class="govuk-grid-row">
@@ -34,17 +36,20 @@ class FullWidthMainContentSpec extends BaseAppSpec:
                                                  |</div>
                                                  |""".stripMargin
 
-  "Given a contentBlock of HTML, rendering the FullWidthMainContent" should {
-    "render as expected" in {
-      val content            = """<h1 class="govuk-heading-xl">Page heading</h1><p class="govuk-body">Some page content</p>"""
-      val contentBlock: Html = Html(content)
-
-      component.render(contentBlock) shouldBe Html(expectedHtml(content))
-    }
-  }
-
   "FullWidthMainContent" should {
-    "handle empty contentBlock" in {
-      component.ref.f(Html("")) shouldBe Html(expectedHtml(""))
+    "render as expected when given a contentBlock" in {
+      val content = """<h1 class="govuk-heading-xl">Page heading</h1><p class="govuk-body">Some page content</p>"""
+
+      component(content) shouldBe Html(expectedHtml(content))
     }
+
+    "render an empty contentBlock" in {
+      component("") shouldBe Html(expectedHtml(""))
+    }
+
+    "have all template methods implemented" in
+      forAll {
+        (contentBlock: String) =>
+          component.render(contentBlock) shouldBe component.ref.f(contentBlock)
+      }
   }

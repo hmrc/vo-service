@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +12,23 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@(mainContent: Html)
+package test
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        @mainContent
-    </div>
-</div>
+import play.api.Configuration
+import play.api.mvc.Call
+import uk.gov.hmrc.vo.service.config.VOServiceConfig
+
+/**
+  * @author Yuriy Tumakha
+  */
+
+object EmptyAppConfig extends VOServiceConfig:
+
+  override def configuration: Configuration = Configuration.empty
+
+  def serviceMenuHome: Call = Call("GET", "/some-service-root/home")
+  def theFirstPage: Call    = Call("GET", "/some-service-root/first")
+
+  override def stylesheet: Option[Call] = None
