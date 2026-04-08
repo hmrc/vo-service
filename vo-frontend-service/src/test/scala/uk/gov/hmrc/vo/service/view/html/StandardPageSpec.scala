@@ -80,6 +80,16 @@ class StandardPageSpec extends BaseAppSpec:
       result    should include("""<p>Custom footer</p>""")
     }
 
+    "render JavaScript history back link" in {
+      val result = component(
+        "Page with JavaScript history back link",
+        backLinkUrl = "javascript-back"
+      )(content).body
+
+      result should include("<title>Page with JavaScript history back link - service.name - gov.name</title>")
+      result should include("""<a href="#" class="govuk-back-link" data-module="hmrc-back-link">Back</a>""")
+    }
+
     "have all template methods implemented" in
       forAll {
         (pageHeading: String) =>

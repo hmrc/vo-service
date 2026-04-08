@@ -47,13 +47,20 @@
         serviceNavigationItems: Seq[ServiceNavigationItem] = Seq.empty
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
+@backLink = @{
+    backLinkUrl.map {
+        case "javascript-back" => BackLink.mimicsBrowserBackButtonViaJavaScript
+        case url => BackLink(url)
+    }
+}
+
 @beforeContent = {
     @accountInfo.map { account =>
         @AccountInfoHeader(account)
     }
 
-    @backLinkUrl.map { link =>
-        @govukBackLink(BackLink(link))
+    @backLink.map { link =>
+        @govukBackLink(link)
     }
 }
 
@@ -80,7 +87,7 @@
 @params = @{
     appConfig.pageParams(
         errorSummary.fold("")(_ => s"${messages("error.prefix")} ") + pageHeading,
-        backLinkUrl,
+        backLink,
         fullWidth = fullWidth,
         additionalHeadBlock = Some(standardHead(additionalHeadBlock)),
         additionalScriptsBlock = additionalScriptsBlock,
