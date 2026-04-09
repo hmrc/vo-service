@@ -23,7 +23,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import play.twirl.api.Html
 import test.EmptyAppConfig
-import uk.gov.hmrc.govukfrontend.views.Aliases.{ServiceNavigation, ServiceNavigationItem}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{BackLink, ServiceNavigation, ServiceNavigationItem}
 import uk.gov.hmrc.govukfrontend.views.html.components.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.backlink.BackLink
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -198,7 +198,7 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
 
       val standardPageParams = voServiceConfig.pageParams(
         "Page heading",
-        "/back/link",
+        BackLink("/back/link"),
         true,
         "<head/>",
         "<script/>",

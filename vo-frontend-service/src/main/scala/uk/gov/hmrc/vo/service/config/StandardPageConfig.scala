@@ -50,7 +50,7 @@ trait StandardPageConfig:
 
   def pageParams(
     pageHeading: String,
-    backLinkUrl: Option[String] = None,
+    backLink: Option[BackLink] = None,
     fullWidth: Boolean = false,
     additionalHeadBlock: Option[Html] = None,
     additionalScriptsBlock: Option[Html] = None,
@@ -61,7 +61,7 @@ trait StandardPageConfig:
   ): HmrcStandardPageParams =
     HmrcStandardPageParams(
       pageTitle = Some(pageTitleFormat(pageHeading)),
-      backLink = backLinkUrl.map(BackLink(_)),
+      backLink = backLink,
       isWelshTranslationAvailable = isWelshTranslationAvailable,
       serviceName = serviceName,
       serviceURLs = serviceUrls,
