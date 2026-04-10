@@ -4,7 +4,7 @@ private object LibDependencies {
 
   private val bootstrapVersion    = "10.7.0"
   private val playFrontendVersion = "13.3.0"
-  private val voTestVersion       = "0.3.0"
+  private val voTestVersion       = "0.4.0"
 
   private val common: Seq[ModuleID] = Seq(
     "uk.gov.hmrc" %% "bootstrap-test-play-30" % bootstrapVersion % Test,

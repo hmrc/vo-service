@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.vo.service.model.button
 
-import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.vo.service.model.button.StartButton
@@ -26,8 +25,6 @@ import uk.gov.hmrc.vo.unit.test.BaseAppSpec
   * @author Yuriy Tumakha
   */
 class StartButtonSpec extends BaseAppSpec:
-
-  given Messages = messagesApi.preferred(Seq.empty)
 
   "StartButton" should {
     "implement the required properties of the parent Button class" in {

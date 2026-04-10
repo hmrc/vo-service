@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.vo.service.view.html
 
-import play.api.i18n.Messages
 import play.api.mvc.RequestHeader
 import play.api.test.FakeRequest
 import play.api.test.Helpers.GET
@@ -35,7 +34,6 @@ class StandardPageSpec extends BaseAppSpec:
   private val component: StandardPage = inject[StandardPage]
 
   given request: RequestHeader = FakeRequest(GET, "/service-root/some-page")
-  given messages: Messages     = messagesApi.preferred(Seq.empty)
 
   private val content: Html = """<p class="govuk-body">Some page content</p>"""
 
