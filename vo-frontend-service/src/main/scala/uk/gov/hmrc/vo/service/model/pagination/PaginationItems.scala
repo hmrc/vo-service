@@ -20,6 +20,8 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.Pagination
 import uk.gov.hmrc.govukfrontend.views.viewmodels.pagination.{PaginationItem, PaginationLink}
 
 /**
+  * Parameters to `GovukPagination` Twirl template.
+  *
   * @author Yuriy Tumakha
   */
 class PaginationItems(

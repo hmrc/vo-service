@@ -18,34 +18,16 @@ package uk.gov.hmrc.vo.service.model.input
 
 import play.api.data.Form
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Content, Fieldset, Hint, HtmlContent, Legend, RadioItem, Radios, Text}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Fieldset, Legend, RadioItem, Radios}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
+import uk.gov.hmrc.vo.service.model.input.FieldPropertyFormats.{fieldHint, fieldLabelAsContent, itemHint, itemLabel}
 
 /**
+  * Parameters to `GovukRadios` Twirl template.
+  *
   * @author Yuriy Tumakha
   */
 object RadioField:
-
-  private def propertyFormat[T](fieldParts: Seq[String], property: String): String =
-    s"${fieldParts.mkString(".")}.$property"
-
-  private def itemPropertyFormat[T](fieldParts: Seq[String], value: T, property: String): String =
-    s"${fieldParts.mkString(".")}.$value.$property"
-
-  private def hintIfDefined(hintKey: String)(using messages: Messages): Option[Hint] =
-    Option.when(messages.isDefinedAt(hintKey))(Hint(content = HtmlContent(messages(hintKey))))
-
-  def legend(fieldParts: String*)(using messages: Messages): Content =
-    HtmlContent(messages(propertyFormat(fieldParts, "label")))
-
-  def hint(fieldParts: String*)(using messages: Messages): Option[Hint] =
-    hintIfDefined(propertyFormat(fieldParts, "hint"))
-
-  def itemLabel[T](value: T, fieldParts: String*)(using messages: Messages): Content =
-    Text(messages(itemPropertyFormat(fieldParts, value, "label")))
-
-  def itemHint[T](value: T, fieldParts: String*)(using messages: Messages): Option[Hint] =
-    hintIfDefined(itemPropertyFormat(fieldParts, value, "hint"))
 
   def radios[T](
     theForm: Form[?],
@@ -61,14 +43,14 @@ object RadioField:
         Fieldset(
           legend = Some(
             Legend(
-              content = legend(prefix, name),
+              content = fieldLabelAsContent(prefix, name),
               classes = if isPageHeading then "govuk-fieldset__legend--l" else "govuk-fieldset__legend--m",
               isPageHeading = isPageHeading
             )
           )
         )
       ),
-      hint = hint(prefix, name),
+      hint = fieldHint(prefix, name),
       items = values.map { value =>
         RadioItem(
           content = itemLabel(value, prefix, name),
