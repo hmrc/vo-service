@@ -24,7 +24,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 import uk.gov.hmrc.govukfrontend.views.viewmodels.input.PrefixOrSuffix
 import uk.gov.hmrc.vo.service.model.input.FieldPropertyFormats.{fieldHint, fieldLabelAsContent}
-import uk.gov.hmrc.vo.service.model.style.WidthOrClass.*
+import WidthOrClass.*
 
 /**
   * Parameters to `GovukInput` Twirl template.

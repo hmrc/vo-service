@@ -21,7 +21,7 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Input, Text}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import uk.gov.hmrc.vo.service.model.input.FieldPropertyFormats.fieldLabel
-import uk.gov.hmrc.vo.service.model.style.WidthOrClass.*
+import WidthOrClass.*
 
 /**
   * Parameters to `GovukInput` Twirl template.

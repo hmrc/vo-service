@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.vo.service.model.style
+package uk.gov.hmrc.vo.service.model.input
 
 /**
   * @author Yuriy Tumakha
