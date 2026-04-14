@@ -29,6 +29,13 @@ import InputWidthStyle.*
   */
 object CurrencyField extends FieldPropertyFormats:
 
+  extension (input: Input)
+
+    def withLabelText(labelText: String): Input =
+      input.copy(
+        label = input.label.copy(content = Text(labelText))
+      )
+
   def input[T](
     theForm: Form[?],
     prefix: String,
