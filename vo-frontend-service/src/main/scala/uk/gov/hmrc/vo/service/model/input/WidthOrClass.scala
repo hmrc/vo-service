@@ -26,5 +26,5 @@ object WidthOrClass:
   extension (w: WidthOrClass)
 
     def toCssClass: String = w match
-      case n: Int    => s"govuk-input--width-$n"
-      case s: String => s
+      case width: Int    => s"govuk-input--width-$width"
+      case cssClass: String => cssClass
