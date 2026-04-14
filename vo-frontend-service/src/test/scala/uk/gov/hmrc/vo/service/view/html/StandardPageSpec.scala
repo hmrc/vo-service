@@ -55,7 +55,7 @@ class StandardPageSpec extends BaseAppSpec:
       result    should include("""<ul class="govuk-list govuk-error-summary__list">""")
       result    should include("""<a href="#field1">field1</a>""")
       result    should include("""<div class="govuk-notification-banner"""")
-      result    should include("""<span class="govuk-caption-m">Section</span>""")
+      result    should include("""<p class="hmrc-caption govuk-caption-m"><span class="govuk-visually-hidden">This section is </span>Section</p>""")
       result    should include("""<h1 class="govuk-heading-l">Page heading</h1>""")
       result    should include("""<link href="/service-root/assets/stylesheets/app.min.css" media="all" rel="stylesheet" type="text/css" />""")
       result    should include("""<meta name="hmrc-timeout-dialog"""")

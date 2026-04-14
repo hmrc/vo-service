@@ -24,11 +24,14 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{Content, Hint, HtmlContent, Text
   */
 trait FieldPropertyFormats:
 
+  private def removeBracketParts(input: String): String =
+    input.replaceAll("\\[.*?]", "")
+
   private def fieldPropertyFormat[T](fieldParts: Seq[String], property: String): String =
-    s"${fieldParts.filter(_.nonEmpty).mkString(".")}.$property"
+    s"${fieldParts.map(removeBracketParts).filter(_.nonEmpty).mkString(".")}.$property"
 
   private def fieldItemPropertyFormat[T](fieldParts: Seq[String], itemValue: T, property: String): String =
-    s"${fieldParts.filter(_.nonEmpty).mkString(".")}.$itemValue.$property"
+    s"${fieldParts.map(removeBracketParts).filter(_.nonEmpty).mkString(".")}.$itemValue.$property"
 
   private def hintIfDefined(hintKey: String)(using messages: Messages): Option[Hint] =
     Option.when(messages.isDefinedAt(hintKey))(Hint(content = HtmlContent(messages(hintKey))))
