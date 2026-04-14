@@ -23,7 +23,6 @@ import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 import uk.gov.hmrc.govukfrontend.views.viewmodels.input.PrefixOrSuffix
-import InputWidthStyle.*
 
 /**
   * Parameters to `GovukInput` Twirl template.
@@ -32,7 +31,7 @@ import InputWidthStyle.*
   */
 object TextField extends FieldPropertyFormats:
 
-  def input[T](
+  def input(
     theForm: Form[?],
     prefix: String,
     name: String,
@@ -59,14 +58,7 @@ object TextField extends FieldPropertyFormats:
       describedBy = ariaDescribedBy,
       classes = inputWidth.toCssClass,
       formGroup = FormGroup(classes = formGroupClasses),
-      label = if hideLabel then Label()
-      else
-        Label(
-          isPageHeading = isPageHeading,
-          content = fieldLabelAsContent(prefix, name),
-          classes = if isPageHeading then "govuk-label--l" else "govuk-!-font-weight-bold"
-        )
-      ,
+      label = buildInputLabel(isPageHeading, hideLabel, prefix, name),
       hint = fieldHint(prefix, name),
       spellcheck = spellcheck,
       prefix = prefixContent.map(c => PrefixOrSuffix(content = c)),

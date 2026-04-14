@@ -18,9 +18,8 @@ package uk.gov.hmrc.vo.service.model.input
 
 import play.api.data.Form
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Input, Text}
+import uk.gov.hmrc.govukfrontend.views.Aliases.Input
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
-import InputWidthStyle.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 
 /**
@@ -30,7 +29,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
   */
 object NumericField extends FieldPropertyFormats:
 
-  def input[T](
+  def input(
     theForm: Form[?],
     prefix: String,
     name: String,

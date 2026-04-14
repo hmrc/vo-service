@@ -20,7 +20,6 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Input, Text}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
-import InputWidthStyle.*
 
 /**
   * Parameters to `GovukInput` Twirl template.
@@ -29,14 +28,7 @@ import InputWidthStyle.*
   */
 object CurrencyField extends FieldPropertyFormats:
 
-  extension (input: Input)
-
-    def withLabelText(labelText: String): Input =
-      input.copy(
-        label = input.label.copy(content = Text(labelText))
-      )
-
-  def input[T](
+  def input(
     theForm: Form[?],
     prefix: String,
     name: String,

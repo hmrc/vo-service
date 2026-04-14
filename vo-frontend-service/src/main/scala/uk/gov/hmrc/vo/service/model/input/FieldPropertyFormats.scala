@@ -17,7 +17,7 @@
 package uk.gov.hmrc.vo.service.model.input
 
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Content, Hint, HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Content, Hint, HtmlContent, Label, Text}
 
 /**
   * @author Yuriy Tumakha
@@ -50,3 +50,13 @@ trait FieldPropertyFormats:
 
   def itemHint[T](itemValue: T, fieldParts: String*)(using messages: Messages): Option[Hint] =
     hintIfDefined(fieldItemPropertyFormat(fieldParts, itemValue, "hint"))
+
+  def buildInputLabel(isPageHeading: Boolean, hideLabel: Boolean, fieldParts: String*)(using messages: Messages): Label =
+    if hideLabel then
+      Label()
+    else
+      Label(
+        isPageHeading = isPageHeading,
+        content = fieldLabelAsContent(fieldParts*),
+        classes = if isPageHeading then "govuk-label--l" else "govuk-!-font-weight-bold"
+      )
