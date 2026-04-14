@@ -22,7 +22,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{Content, Hint, HtmlContent, Text
 /**
   * @author Yuriy Tumakha
   */
-object FieldPropertyFormats:
+trait FieldPropertyFormats:
 
   private def fieldPropertyFormat[T](fieldParts: Seq[String], property: String): String =
     s"${fieldParts.filter(_.nonEmpty).mkString(".")}.$property"

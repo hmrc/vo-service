@@ -21,25 +21,26 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Input, Text}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import InputWidthStyle.*
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 
 /**
   * Parameters to `GovukInput` Twirl template.
   *
   * @author Yuriy Tumakha
   */
-object CurrencyField extends FieldPropertyFormats:
+object NumericField extends FieldPropertyFormats:
 
   def input[T](
     theForm: Form[?],
     prefix: String,
     name: String,
     ariaLabel: Option[String] = None, // Field label by default
-    inputMode: Option[String] = None, // "numeric" for digits only
-    pattern: Option[String] = Some("^\\s*£?\\s*(?:\\d+|\\d{1,3}(?:,\\d{3})*)(?:\\.\\d{1,2})?\\s*$"),
     isPageHeading: Boolean = false,
     hideLabel: Boolean = false,
     inputWidth: InputWidthStyle = "",
-    maxlength: Int = 13,
+    maxlength: Int = 8,
+    prefixContent: Option[Content] = None,
+    suffixContent: Option[Content] = None,
     attributes: Map[String, String] = Map.empty
   )(using messages: Messages
   ): Input =
@@ -47,14 +48,15 @@ object CurrencyField extends FieldPropertyFormats:
       theForm,
       prefix,
       name,
-      prefixContent = Some(Text("£")),
-      inputMode = inputMode,
-      pattern = pattern,
+      inputMode = Some("numeric"),
+      pattern = Some("^\\d*$"),
       autocomplete = Some("off"),
       spellcheck = Some(false),
       isPageHeading = isPageHeading,
       hideLabel = hideLabel,
       inputWidth = inputWidth,
+      prefixContent = prefixContent,
+      suffixContent = suffixContent,
       attributes = Map(
         "maxlength"  -> maxlength.toString,
         "aria-label" -> ariaLabel.getOrElse(fieldLabel(prefix, name))

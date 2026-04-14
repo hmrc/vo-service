@@ -20,14 +20,13 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Fieldset, Legend, RadioItem, Radios}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
-import uk.gov.hmrc.vo.service.model.input.FieldPropertyFormats.{fieldHint, fieldLabelAsContent, itemHint, itemLabel}
 
 /**
   * Parameters to `GovukRadios` Twirl template.
   *
   * @author Yuriy Tumakha
   */
-object RadioField:
+object RadioField extends FieldPropertyFormats:
 
   def radios[T](
     theForm: Form[?],

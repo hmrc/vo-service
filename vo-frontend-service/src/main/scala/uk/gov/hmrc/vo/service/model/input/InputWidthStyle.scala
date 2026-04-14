@@ -19,12 +19,15 @@ package uk.gov.hmrc.vo.service.model.input
 /**
   * @author Yuriy Tumakha
   */
-object WidthOrClass:
+object InputWidthStyle:
 
-  type WidthOrClass = 2 | 3 | 4 | 5 | 10 | 20 | 30 | String
+  type InputWidthStyle = 2 | 3 | 4 | 5 | 10 | 20 | 30 | "half" | "two-thirds" | "full" | "" | String
 
-  extension (w: WidthOrClass)
+  extension (w: InputWidthStyle)
 
     def toCssClass: String = w match
-      case width: Int    => s"govuk-input--width-$width"
+      case width: Int       => s"govuk-input--width-$width"
+      case "half"           => "govuk-!-width-one-half"
+      case "two-thirds"     => "govuk-!-width-two-thirds"
+      case "full"           => "govuk-!-width-full"
       case cssClass: String => cssClass

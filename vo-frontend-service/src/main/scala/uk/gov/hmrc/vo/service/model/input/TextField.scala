@@ -23,15 +23,14 @@ import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 import uk.gov.hmrc.govukfrontend.views.viewmodels.input.PrefixOrSuffix
-import uk.gov.hmrc.vo.service.model.input.FieldPropertyFormats.{fieldHint, fieldLabelAsContent}
-import WidthOrClass.*
+import InputWidthStyle.*
 
 /**
   * Parameters to `GovukInput` Twirl template.
   *
   * @author Yuriy Tumakha
   */
-object TextField:
+object TextField extends FieldPropertyFormats:
 
   def input[T](
     theForm: Form[?],
@@ -44,8 +43,7 @@ object TextField:
     ariaDescribedBy: Option[String] = None,
     isPageHeading: Boolean = false,
     hideLabel: Boolean = false,
-    inputWidthOrClass: WidthOrClass = "",
-    labelClasses: String = "",
+    inputWidth: InputWidthStyle = "",
     formGroupClasses: Option[String] = None,
     spellcheck: Option[Boolean] = None,
     prefixContent: Option[Content] = None,
@@ -59,9 +57,16 @@ object TextField:
       pattern = pattern,
       autocomplete = autocomplete,
       describedBy = ariaDescribedBy,
-      classes = inputWidthOrClass.toCssClass,
+      classes = inputWidth.toCssClass,
       formGroup = FormGroup(classes = formGroupClasses),
-      label = if hideLabel then Label() else Label(isPageHeading = isPageHeading, content = fieldLabelAsContent(prefix, name), classes = labelClasses),
+      label = if hideLabel then Label()
+      else
+        Label(
+          isPageHeading = isPageHeading,
+          content = fieldLabelAsContent(prefix, name),
+          classes = if isPageHeading then "govuk-label--l" else "govuk-!-font-weight-bold"
+        )
+      ,
       hint = fieldHint(prefix, name),
       spellcheck = spellcheck,
       prefix = prefixContent.map(c => PrefixOrSuffix(content = c)),
