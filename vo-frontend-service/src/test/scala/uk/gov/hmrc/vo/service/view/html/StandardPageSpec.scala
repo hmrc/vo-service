@@ -67,6 +67,7 @@ class StandardPageSpec extends BaseAppSpec:
       val result = component(
         "Page with custom footer",
         showH1 = false,
+        sectionName = "Section without H1",
         footerBlock = "<p>Custom footer</p>"
       )(content).body
 

@@ -86,6 +86,10 @@
                 captionClasses = Some("govuk-caption-m")
             )
         )
+    } else {
+        @sectionName.map { section =>
+            <span class="govuk-caption-m">@section</span>
+        }
     }
 
     @contentBlock
