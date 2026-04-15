@@ -19,6 +19,8 @@ package uk.gov.hmrc.vo.service.model.button
 import play.api.i18n.Messages
 
 /**
+  * Parameters to `GovukButton` Twirl template.
+  *
   * @author Yuriy Tumakha
   */
 class SecondaryButton(prefix: String = "save")(using messages: Messages)

@@ -20,7 +20,6 @@ import org.scalactic.Prettifier.default
 import play.api.data.Form
 import play.api.data.Forms.{number, optional, text, tuple}
 import play.api.i18n.Messages
-import play.api.test.Helpers.*
 import uk.gov.hmrc.govukfrontend.views.Aliases.*
 import uk.gov.hmrc.vo.unit.test.BaseAppSpec
 
@@ -39,8 +38,6 @@ class RadioFieldSpec extends BaseAppSpec:
 
   "RadioField.radios" should {
     "return configured Radios" in {
-      given Messages = messagesApi.preferred(Seq.empty)
-
       val values         = 5 to 1 by -1
       val radios: Radios = RadioField.radios(feedbackForm, "feedback", "satisfaction", values)
       val legend         = radios.fieldset.get.legend.get
@@ -62,12 +59,10 @@ class RadioFieldSpec extends BaseAppSpec:
     }
 
     "support properties - hint, isPageHeading, inline" in {
-      given Messages = stubMessagesApi(
-        Map("en" -> Map(
-          "feedback.satisfaction.label" -> "Satisfaction",
-          "feedback.satisfaction.hint"  -> "Satisfaction hint"
-        ))
-      ).preferred(Seq.empty)
+      given Messages = stubMessages(
+        "feedback.satisfaction.label" -> "Satisfaction",
+        "feedback.satisfaction.hint"  -> "Satisfaction hint"
+      )
 
       val values         = 5 to 1 by -1
       val radios: Radios = RadioField.radios(feedbackForm, "feedback", "satisfaction", values, isPageHeading = false, inline = true)
@@ -86,4 +81,22 @@ class RadioFieldSpec extends BaseAppSpec:
         )
       }
     }
+
+    "set checked = true for selected item" in {
+      val values = 5 to 1 by -1
+      val form   = feedbackForm.fillAndValidate((4, None))
+
+      val radios: Radios = RadioField.radios(form, "feedback", "satisfaction", values)
+
+      val firstItem = radios.items.head
+      firstItem.content shouldBe Text("feedback.satisfaction.5.label")
+      firstItem.value   shouldBe Some("5")
+      firstItem.checked shouldBe false
+
+      val secondItem = radios.items(1)
+      secondItem.content shouldBe Text("feedback.satisfaction.4.label")
+      secondItem.value   shouldBe Some("4")
+      secondItem.checked shouldBe true
+    }
+
   }

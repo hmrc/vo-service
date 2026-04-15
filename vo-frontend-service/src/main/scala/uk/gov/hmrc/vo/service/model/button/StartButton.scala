@@ -22,6 +22,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.vo.service.model.button.SubmitButton.{buttonIdFormat, buttonLabelFormat}
 
 /**
+  * Parameters to `GovukButton` Twirl template.
+  *
   * @author Yuriy Tumakha
   */
 class StartButton(url: String, prefix: String = "start")(using messages: Messages)

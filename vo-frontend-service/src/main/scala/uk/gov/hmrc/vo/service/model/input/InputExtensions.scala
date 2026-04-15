@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.vo.service.model.button
+package uk.gov.hmrc.vo.service.model.input
 
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.Button
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import uk.gov.hmrc.vo.service.model.button.SubmitButton.{buttonIdFormat, buttonLabelFormat}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Input, Text}
 
 /**
-  * Parameters to `GovukButton` Twirl template.
-  *
   * @author Yuriy Tumakha
   */
-class LinkButton(prefix: String, url: String)(using messages: Messages)
-  extends Button(
-    id = Some(buttonIdFormat(prefix)),
-    content = Text(buttonLabelFormat(prefix)),
-    href = Some(url)
-  )
+extension (input: Input)
+
+  def withLabelText(labelText: String): Input =
+    input.copy(
+      label = input.label.copy(content = Text(labelText))
+    )

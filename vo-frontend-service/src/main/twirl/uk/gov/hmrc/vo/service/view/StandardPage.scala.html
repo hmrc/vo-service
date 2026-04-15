@@ -17,7 +17,9 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{BackLink, ErrorSummary, ServiceNavigationItem}
 @import uk.gov.hmrc.govukfrontend.views.html.components.{GovukBackLink, GovukErrorSummary, GovukNotificationBanner}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcPageHeading
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.pageheading.PageHeading
 @import uk.gov.hmrc.vo.service.config.VOServiceConfig
 @import uk.gov.hmrc.vo.service.model.AccountInfo
 @import uk.gov.hmrc.vo.service.view.html.CustomFooterPage
@@ -25,6 +27,7 @@
 @this(
         appConfig: VOServiceConfig,
         hmrcStandardPage: HmrcStandardPage,
+        hmrcPageHeading: HmrcPageHeading,
         govukBackLink: GovukBackLink,
         govukErrorSummary: GovukErrorSummary,
         govukNotificationBanner: GovukNotificationBanner,
@@ -73,12 +76,20 @@
         @govukNotificationBanner(appConfig.notificationBanner)
     }
 
-    @sectionName.map { section =>
-        <span class="govuk-caption-m">@section</span>
-    }
-
     @if(showH1) {
-        <h1 class="govuk-heading-l">@pageHeading</h1>
+        @hmrcPageHeading(
+            PageHeading(
+                text = pageHeading,
+                section = sectionName,
+                language = Some(messages.lang.language),
+                headingClasses = Some("govuk-heading-l"),
+                captionClasses = Some("govuk-caption-m")
+            )
+        )
+    } else {
+        @sectionName.map { section =>
+            <span class="govuk-caption-m">@section</span>
+        }
     }
 
     @contentBlock

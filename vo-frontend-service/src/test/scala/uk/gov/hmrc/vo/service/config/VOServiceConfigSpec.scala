@@ -17,7 +17,6 @@
 package uk.gov.hmrc.vo.service.config
 
 import play.api.Configuration
-import play.api.i18n.Messages
 import play.api.mvc.{Call, RequestHeader}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -122,8 +121,6 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
     }
 
     "build NotificationBanner" in {
-      given Messages = messagesApi.preferred(Seq.empty)
-
       voServiceConfig.notificationBanner shouldBe
         NotificationBanner(
           HtmlContent("<p class='govuk-notification-banner__heading'>This service will be unavailable while we carry out some essential maintenance.</p>"),
@@ -194,7 +191,6 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
 
     "build HmrcStandardPageParams" in {
       given RequestHeader = getRequest
-      given Messages      = messagesApi.preferred(Seq.empty)
 
       val standardPageParams = voServiceConfig.pageParams(
         "Page heading",
@@ -236,7 +232,6 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
 
     "build minimal HmrcStandardPageParams" in {
       given RequestHeader = getRequest
-      given Messages      = messagesApi.preferred(Seq.empty)
 
       val standardPageParams = voServiceConfig.pageParams("Simple page heading")
 

@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.vo.service.view.html
 
-import play.api.i18n.Messages
 import play.twirl.api.Html
 import uk.gov.hmrc.vo.service.model.AccountInfo
 import uk.gov.hmrc.vo.unit.test.BaseAppSpec
@@ -41,8 +40,6 @@ class AccountInfoHeaderSpec extends BaseAppSpec:
        |            <span class="govuk-body-s">${accountInfo.value2.getOrElse("")}</span>
        |        </li>
        |</ul>""".stripMargin
-
-  given messages: Messages = messagesApi.preferred(Seq.empty)
 
   "FullWidthMainContent" should {
     "render as expected account info" in {

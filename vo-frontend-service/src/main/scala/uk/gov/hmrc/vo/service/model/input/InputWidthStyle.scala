@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.vo.service.model.button
-
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.Button
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import uk.gov.hmrc.vo.service.model.button.SubmitButton.{buttonIdFormat, buttonLabelFormat}
+package uk.gov.hmrc.vo.service.model.input
 
 /**
-  * Parameters to `GovukButton` Twirl template.
-  *
   * @author Yuriy Tumakha
   */
-class LinkButton(prefix: String, url: String)(using messages: Messages)
-  extends Button(
-    id = Some(buttonIdFormat(prefix)),
-    content = Text(buttonLabelFormat(prefix)),
-    href = Some(url)
-  )
+type InputWidthStyle = 2 | 3 | 4 | 5 | 10 | 20 | 30 | "half" | "two-thirds" | "full" | "" | String
+
+extension (w: InputWidthStyle)
+
+  def toCssClass: String = w match
+    case width: Int       => s"govuk-input--width-$width"
+    case "half"           => "govuk-!-width-one-half"
+    case "two-thirds"     => "govuk-!-width-two-thirds"
+    case "full"           => "govuk-!-width-full"
+    case cssClass: String => cssClass

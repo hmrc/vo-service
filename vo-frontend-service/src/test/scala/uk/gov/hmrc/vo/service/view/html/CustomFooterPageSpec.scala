@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.vo.service.view.html
 
-import play.api.i18n.Messages
 import play.api.mvc.RequestHeader
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
@@ -33,7 +32,6 @@ class CustomFooterPageSpec extends BaseAppSpec:
   private val component = inject[CustomFooterPage]
 
   given request: RequestHeader = getRequest
-  given messages: Messages     = messagesApi.preferred(Seq.empty)
 
   private val pageParams = HmrcStandardPageParams(pageTitle = "Page title", serviceName = "Service Name")
   private val content    = """<h1 class="govuk-heading-xl">Page heading</h1><p class="govuk-body">Some page content</p>"""
