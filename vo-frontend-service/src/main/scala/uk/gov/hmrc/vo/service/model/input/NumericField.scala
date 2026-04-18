@@ -34,6 +34,7 @@ object NumericField extends FieldPropertyFormats:
     prefix: String,
     name: String,
     ariaLabel: Option[String] = None, // Field label by default
+    labelText: Option[String] = None,
     isPageHeading: Boolean = false,
     hideLabel: Boolean = false,
     inputWidth: InputWidthStyle = "",
@@ -51,6 +52,7 @@ object NumericField extends FieldPropertyFormats:
       pattern = Some("^\\d*$"),
       autocomplete = Some("off"),
       spellcheck = Some(false),
+      labelText = labelText,
       isPageHeading = isPageHeading,
       hideLabel = hideLabel,
       inputWidth = inputWidth,

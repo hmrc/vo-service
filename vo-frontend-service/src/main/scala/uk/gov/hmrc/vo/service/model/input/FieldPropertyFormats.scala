@@ -39,8 +39,11 @@ trait FieldPropertyFormats:
   def fieldLabel(fieldParts: String*)(using messages: Messages): String =
     messages(fieldPropertyFormat(fieldParts, "label"))
 
-  def fieldLabelAsContent(fieldParts: String*)(using messages: Messages): Content =
-    HtmlContent(fieldLabel(fieldParts*))
+  /**
+    * Uses `labelText` if present, otherwise combines `fieldParts`.
+    */
+  def fieldLabelAsContent(labelText: Option[String], fieldParts: String*)(using messages: Messages): Content =
+    HtmlContent(labelText.getOrElse(fieldLabel(fieldParts*)))
 
   def fieldHint(fieldParts: String*)(using messages: Messages): Option[Hint] =
     hintIfDefined(fieldPropertyFormat(fieldParts, "hint"))
@@ -51,12 +54,12 @@ trait FieldPropertyFormats:
   def itemHint[T](itemValue: T, fieldParts: String*)(using messages: Messages): Option[Hint] =
     hintIfDefined(fieldItemPropertyFormat(fieldParts, itemValue, "hint"))
 
-  def buildInputLabel(isPageHeading: Boolean, hideLabel: Boolean, fieldParts: String*)(using messages: Messages): Label =
+  def buildInputLabel(isPageHeading: Boolean, hideLabel: Boolean, labelText: Option[String], fieldParts: String*)(using messages: Messages): Label =
     if hideLabel then
       Label()
     else
       Label(
         isPageHeading = isPageHeading,
-        content = fieldLabelAsContent(fieldParts*),
+        content = fieldLabelAsContent(labelText, fieldParts*),
         classes = if isPageHeading then "govuk-label--l" else "govuk-!-font-weight-bold"
       )

@@ -33,6 +33,7 @@ object RadioField extends FieldPropertyFormats:
     prefix: String,
     name: String,
     values: Seq[T],
+    labelText: Option[String] = None,
     isPageHeading: Boolean = true,
     inline: Boolean = false
   )(using messages: Messages
@@ -42,8 +43,8 @@ object RadioField extends FieldPropertyFormats:
         Fieldset(
           legend = Some(
             Legend(
-              content = fieldLabelAsContent(prefix, name),
-              classes = if isPageHeading then "govuk-fieldset__legend--l" else "govuk-fieldset__legend--m",
+              content = fieldLabelAsContent(labelText, prefix, name),
+              classes = if isPageHeading then "govuk-fieldset__legend--l" else "govuk-!-font-weight-bold",
               isPageHeading = isPageHeading
             )
           )

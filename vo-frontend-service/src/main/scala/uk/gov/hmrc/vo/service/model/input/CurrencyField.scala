@@ -35,6 +35,7 @@ object CurrencyField extends FieldPropertyFormats:
     ariaLabel: Option[String] = None, // Field label by default
     inputMode: Option[String] = None, // "numeric" for digits only
     pattern: Option[String] = Some("^\\s*£?\\s*(?:\\d+|\\d{1,3}(?:,\\d{3})*)(?:\\.\\d{1,2})?\\s*$"),
+    labelText: Option[String] = None,
     isPageHeading: Boolean = false,
     hideLabel: Boolean = false,
     inputWidth: InputWidthStyle = "",
@@ -51,6 +52,7 @@ object CurrencyField extends FieldPropertyFormats:
       pattern = pattern,
       autocomplete = Some("off"),
       spellcheck = Some(false),
+      labelText = labelText,
       isPageHeading = isPageHeading,
       hideLabel = hideLabel,
       inputWidth = inputWidth,

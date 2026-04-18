@@ -21,6 +21,7 @@ import play.api.data.Form
 import play.api.data.Forms.{number, optional, text, tuple}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.*
+import uk.gov.hmrc.vo.service.view.html.*
 import uk.gov.hmrc.vo.unit.test.BaseAppSpec
 
 /**
@@ -58,18 +59,27 @@ class RadioFieldSpec extends BaseAppSpec:
       }
     }
 
-    "support properties - hint, isPageHeading, inline" in {
+    "support properties - labelText, hint, isPageHeading, inline" in {
       given Messages = stubMessages(
         "feedback.satisfaction.label" -> "Satisfaction",
         "feedback.satisfaction.hint"  -> "Satisfaction hint"
       )
 
       val values         = 5 to 1 by -1
-      val radios: Radios = RadioField.radios(feedbackForm, "feedback", "satisfaction", values, isPageHeading = false, inline = true)
-      val legend         = radios.fieldset.get.legend.get
+      val radios: Radios = RadioField.radios(
+        feedbackForm,
+        "feedback",
+        "satisfaction",
+        values,
+        labelText = "New Label Text",
+        isPageHeading = false,
+        inline = true
+      )
 
-      legend.content       shouldBe HtmlContent("Satisfaction")
-      legend.classes       shouldBe "govuk-fieldset__legend--m"
+      val legend = radios.fieldset.get.legend.get
+
+      legend.content       shouldBe HtmlContent("New Label Text")
+      legend.classes       shouldBe "govuk-!-font-weight-bold"
       legend.isPageHeading shouldBe false
 
       radios.hint    shouldBe Some(Hint(content = HtmlContent("Satisfaction hint")))
