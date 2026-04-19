@@ -48,8 +48,8 @@ trait FieldPropertyFormats:
   def fieldHint(fieldParts: String*)(using messages: Messages): Option[Hint] =
     hintIfDefined(fieldPropertyFormat(fieldParts, "hint"))
 
-  def itemLabel[T](itemValue: T, fieldParts: String*)(using messages: Messages): Content =
-    Text(messages(fieldItemPropertyFormat(fieldParts, itemValue, "label")))
+  def itemLabel[T](itemValue: T, fieldParts: String*)(using messages: Messages): String =
+    messages(fieldItemPropertyFormat(fieldParts, itemValue, "label"))
 
   def itemHint[T](itemValue: T, fieldParts: String*)(using messages: Messages): Option[Hint] =
     hintIfDefined(fieldItemPropertyFormat(fieldParts, itemValue, "hint"))
@@ -63,3 +63,10 @@ trait FieldPropertyFormats:
         content = fieldLabelAsContent(labelText, fieldParts*),
         classes = if isPageHeading then "govuk-label--l" else "govuk-!-font-weight-bold"
       )
+
+  def combineClasses(classes: Option[String]*): String =
+    classes
+      .flatten
+      .flatMap(_.trim.split("\\s+"))
+      .filter(_.nonEmpty)
+      .mkString(" ")

@@ -18,7 +18,7 @@ package uk.gov.hmrc.vo.service.model.input
 
 import play.api.data.Form
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Fieldset, Legend, RadioItem, Radios}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Fieldset, Legend, RadioItem, Radios, Text}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 
 /**
@@ -32,10 +32,12 @@ object RadioField extends FieldPropertyFormats:
     theForm: Form[?],
     prefix: String,
     name: String,
-    values: Seq[T],
+    values: Seq[T] = Seq.empty,
+    valuesWithLabels: Option[Seq[(String, String)]] = None, // If `valuesWithLabels` is specified, then the `values` parameter is skipped
     labelText: Option[String] = None,
     isPageHeading: Boolean = true,
-    inline: Boolean = false
+    inline: Boolean = false,
+    classes: Option[String] = None
   )(using messages: Messages
   ): Radios =
     Radios(
@@ -51,12 +53,15 @@ object RadioField extends FieldPropertyFormats:
         )
       ),
       hint = fieldHint(prefix, name),
-      items = values.map { value =>
-        RadioItem(
-          content = itemLabel(value, prefix, name),
-          hint = itemHint(value, prefix, name),
-          value = Some(value.toString)
-        )
+      items = valuesWithLabels.getOrElse(
+        values.map(value => value.toString -> itemLabel(value, prefix, name))
+      ).map {
+        case (value, label) =>
+          RadioItem(
+            content = Text(label),
+            hint = itemHint(value, prefix, name),
+            value = Some(value)
+          )
       },
-      classes = if (inline) "govuk-radios--inline" else ""
+      classes = combineClasses(Option.when(inline)("govuk-radios--inline"), classes)
     ).withFormField(theForm(name))
