@@ -17,7 +17,7 @@
 package uk.gov.hmrc.vo.service.model.input
 
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Content, Hint, HtmlContent, Label, Text}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Content, Hint, HtmlContent, Label}
 
 /**
   * @author Yuriy Tumakha
