@@ -19,13 +19,19 @@ package uk.gov.hmrc.vo.service.model.input
 import play.api.data.Form
 import uk.gov.hmrc.vo.unit.test.BaseAppSpec
 import play.api.data.Forms.{number, optional, single}
-import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Legend, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
 
 /**
   * @author Yuriy Tumakha
   */
 class InputExtensionsSpec extends BaseAppSpec:
+
+  enum TestEnum:
+
+    case yes,
+      `yes-change-address`,
+      no
 
   val form: Form[Option[Int]] =
     Form(
@@ -35,7 +41,7 @@ class InputExtensionsSpec extends BaseAppSpec:
     )
 
   "Input extensions" should {
-    "add method .withLabelText to override input label text" in {
+    "add method .withLabelText to override Input label text" in {
       val input = TextField.input(form, "section8.page13", "some.uncommon.field")
 
       input.label shouldBe Label(
@@ -47,5 +53,29 @@ class InputExtensionsSpec extends BaseAppSpec:
         classes = "govuk-!-font-weight-bold",
         content = Text("New label text")
       )
+    }
+
+    "add method .withLabelText to override Radios label text" in {
+      val radios = RadioField.radios(form, "section1", "some.unusual.field", Seq(1, 2, 3))
+
+      radios.fieldset.get.legend.get shouldBe Legend(
+        classes = "govuk-fieldset__legend--l",
+        content = HtmlContent("section1.some.unusual.field.label"),
+        isPageHeading = true
+      )
+
+      radios.withLabelText("New legend text").fieldset.get.legend.get shouldBe Legend(
+        classes = "govuk-fieldset__legend--l",
+        content = Text("New legend text"),
+        isPageHeading = true
+      )
+    }
+
+    "add auto conversion from values Array to Seq" in {
+      val radios = RadioField.radios(form, "section1", "field1", TestEnum.values)
+
+      radios.items.map(_.content) shouldBe TestEnum.values.map { value =>
+        Text(s"section1.field1.$value.label")
+      }
     }
   }

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.vo.service.model.input
 
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Content, Hint, HtmlContent, Label, Text}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Content, Hint, HtmlContent, Label}
 
 /**
   * @author Yuriy Tumakha
@@ -39,24 +39,34 @@ trait FieldPropertyFormats:
   def fieldLabel(fieldParts: String*)(using messages: Messages): String =
     messages(fieldPropertyFormat(fieldParts, "label"))
 
-  def fieldLabelAsContent(fieldParts: String*)(using messages: Messages): Content =
-    HtmlContent(fieldLabel(fieldParts*))
+  /**
+    * Uses `labelText` if present, otherwise combines `fieldParts`.
+    */
+  def fieldLabelAsContent(labelText: Option[String], fieldParts: String*)(using messages: Messages): Content =
+    HtmlContent(labelText.getOrElse(fieldLabel(fieldParts*)))
 
   def fieldHint(fieldParts: String*)(using messages: Messages): Option[Hint] =
     hintIfDefined(fieldPropertyFormat(fieldParts, "hint"))
 
-  def itemLabel[T](itemValue: T, fieldParts: String*)(using messages: Messages): Content =
-    Text(messages(fieldItemPropertyFormat(fieldParts, itemValue, "label")))
+  def itemLabel[T](itemValue: T, fieldParts: String*)(using messages: Messages): String =
+    messages(fieldItemPropertyFormat(fieldParts, itemValue, "label"))
 
   def itemHint[T](itemValue: T, fieldParts: String*)(using messages: Messages): Option[Hint] =
     hintIfDefined(fieldItemPropertyFormat(fieldParts, itemValue, "hint"))
 
-  def buildInputLabel(isPageHeading: Boolean, hideLabel: Boolean, fieldParts: String*)(using messages: Messages): Label =
+  def buildInputLabel(isPageHeading: Boolean, hideLabel: Boolean, labelText: Option[String], fieldParts: String*)(using messages: Messages): Label =
     if hideLabel then
       Label()
     else
       Label(
         isPageHeading = isPageHeading,
-        content = fieldLabelAsContent(fieldParts*),
+        content = fieldLabelAsContent(labelText, fieldParts*),
         classes = if isPageHeading then "govuk-label--l" else "govuk-!-font-weight-bold"
       )
+
+  def combineClasses(classes: Option[String]*): String =
+    classes
+      .flatten
+      .flatMap(_.trim.split("\\s+"))
+      .filter(_.nonEmpty)
+      .mkString(" ")

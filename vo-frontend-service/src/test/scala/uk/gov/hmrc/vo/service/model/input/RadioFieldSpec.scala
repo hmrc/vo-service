@@ -21,6 +21,7 @@ import play.api.data.Form
 import play.api.data.Forms.{number, optional, text, tuple}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.*
+import uk.gov.hmrc.vo.service.view.html.*
 import uk.gov.hmrc.vo.unit.test.BaseAppSpec
 
 /**
@@ -28,13 +29,18 @@ import uk.gov.hmrc.vo.unit.test.BaseAppSpec
   */
 class RadioFieldSpec extends BaseAppSpec:
 
-  val feedbackForm: Form[(Int, Option[String])] =
+  private val feedbackForm: Form[(Int, Option[String])] =
     Form(
       tuple(
         "satisfaction" -> number,
         "comments"     -> optional(text)
       )
     )
+
+  private def yesNoValues(isWelsh: Boolean): Seq[(String, String)] = Seq(
+    "true"  -> (if isWelsh then "Ydw" else "Yes"),
+    "false" -> (if isWelsh then "Nac ydw" else "No")
+  )
 
   "RadioField.radios" should {
     "return configured Radios" in {
@@ -58,18 +64,27 @@ class RadioFieldSpec extends BaseAppSpec:
       }
     }
 
-    "support properties - hint, isPageHeading, inline" in {
+    "support properties - labelText, hint, isPageHeading, inline" in {
       given Messages = stubMessages(
         "feedback.satisfaction.label" -> "Satisfaction",
         "feedback.satisfaction.hint"  -> "Satisfaction hint"
       )
 
       val values         = 5 to 1 by -1
-      val radios: Radios = RadioField.radios(feedbackForm, "feedback", "satisfaction", values, isPageHeading = false, inline = true)
-      val legend         = radios.fieldset.get.legend.get
+      val radios: Radios = RadioField.radios(
+        feedbackForm,
+        "feedback",
+        "satisfaction",
+        values,
+        labelText = "New Label Text",
+        isPageHeading = false,
+        inline = true
+      )
 
-      legend.content       shouldBe HtmlContent("Satisfaction")
-      legend.classes       shouldBe "govuk-fieldset__legend--m"
+      val legend = radios.fieldset.get.legend.get
+
+      legend.content       shouldBe HtmlContent("New Label Text")
+      legend.classes       shouldBe "govuk-!-font-weight-bold"
       legend.isPageHeading shouldBe false
 
       radios.hint    shouldBe Some(Hint(content = HtmlContent("Satisfaction hint")))
@@ -80,6 +95,41 @@ class RadioFieldSpec extends BaseAppSpec:
           value = Some(s"$value")
         )
       }
+    }
+
+    "add css class" in {
+      val radios: Radios = RadioField.radios(
+        feedbackForm,
+        "feedback",
+        "satisfaction",
+        5 to 1 by -1,
+        classes = " extra-css-class "
+      )
+
+      radios.classes shouldBe "extra-css-class"
+
+      val legend = radios.fieldset.get.legend.get
+
+      legend.classes       shouldBe "govuk-fieldset__legend--l"
+      legend.isPageHeading shouldBe true
+    }
+
+    "add an extra classes while keeping `govuk-radios--inline`" in {
+      val radios: Radios = RadioField.radios(
+        feedbackForm,
+        "feedback",
+        "satisfaction",
+        5 to 1 by -1,
+        inline = true,
+        classes = "extra-css-class    class2   class3 "
+      )
+
+      radios.classes shouldBe "govuk-radios--inline extra-css-class class2 class3"
+
+      val legend = radios.fieldset.get.legend.get
+
+      legend.classes       shouldBe "govuk-fieldset__legend--l"
+      legend.isPageHeading shouldBe true
     }
 
     "set checked = true for selected item" in {
@@ -97,6 +147,22 @@ class RadioFieldSpec extends BaseAppSpec:
       secondItem.content shouldBe Text("feedback.satisfaction.4.label")
       secondItem.value   shouldBe Some("4")
       secondItem.checked shouldBe true
+    }
+
+    "set values with their labels" in {
+      val radios: Radios = RadioField.radios(feedbackForm, "page1", "field1", valuesWithLabels = yesNoValues(isWelsh = false))
+
+      radios.items.map(item => item.value.get -> item.content.asHtml.toString) shouldBe Seq(
+        "true"  -> "Yes",
+        "false" -> "No"
+      )
+
+      val radiosWelsh: Radios = RadioField.radios(feedbackForm, "page1", "field1", valuesWithLabels = yesNoValues(isWelsh = true))
+
+      radiosWelsh.items.map(item => item.value.get -> item.content.asHtml.toString) shouldBe Seq(
+        "true"  -> "Ydw",
+        "false" -> "Nac ydw"
+      )
     }
 
   }

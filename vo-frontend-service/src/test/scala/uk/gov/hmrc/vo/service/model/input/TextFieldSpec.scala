@@ -26,6 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage
 import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.input.PrefixOrSuffix
 import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
+import uk.gov.hmrc.vo.service.view.html.*
 import uk.gov.hmrc.vo.unit.test.BaseAppSpec
 
 /**
@@ -64,13 +65,22 @@ class TextFieldSpec extends BaseAppSpec:
     "return Input as page heading, with 10 character width, with suffix content and filled value" in {
       val filledForm = form.fillAndValidate("Full name")
 
-      val input = TextField.input(filledForm, "page2", "name", isPageHeading = true, inputWidth = 10, suffixContent = Some(Text("miles")))
+      val input = TextField.input(
+        filledForm,
+        "page2",
+        "name",
+        labelText = "New Label Text",
+        isPageHeading = true,
+        inputWidth = 10,
+        suffixContent = Text("miles")
+      )
+
       input.id                    shouldBe "name"
       input.name                  shouldBe "name"
       input.inputType             shouldBe "text"
       input.inputmode             shouldBe None
       input.value                 shouldBe Some("Full name")
-      input.label                 shouldBe Label(isPageHeading = true, classes = "govuk-label--l", content = HtmlContent("page2.name.label"))
+      input.label                 shouldBe Label(isPageHeading = true, classes = "govuk-label--l", content = HtmlContent("New Label Text"))
       input.hint                  shouldBe None
       input.errorMessage          shouldBe None
       input.classes               shouldBe "govuk-input--width-10"

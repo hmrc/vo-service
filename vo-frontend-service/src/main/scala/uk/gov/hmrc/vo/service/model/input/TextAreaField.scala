@@ -18,46 +18,39 @@ package uk.gov.hmrc.vo.service.model.input
 
 import play.api.data.Form
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Input, Text}
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
+import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
+import uk.gov.hmrc.hmrcfrontend.views.Aliases.CharacterCount
+import uk.gov.hmrc.hmrcfrontend.views.Implicits.*
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En}
 
 /**
-  * Parameters to `GovukInput` Twirl template.
+  * Parameters to `HmrcCharacterCount` Twirl template.
   *
   * @author Yuriy Tumakha
   */
-object CurrencyField extends FieldPropertyFormats:
+object TextAreaField extends FieldPropertyFormats:
 
-  def input(
+  def characterCount(
     theForm: Form[?],
     prefix: String,
     name: String,
-    ariaLabel: Option[String] = None, // Field label by default
-    inputMode: Option[String] = None, // "numeric" for digits only
-    pattern: Option[String] = Some("^\\s*£?\\s*(?:\\d+|\\d{1,3}(?:,\\d{3})*)(?:\\.\\d{1,2})?\\s*$"),
+    rows: Int = 5,
+    maxLength: Int = 1000,
     labelText: Option[String] = None,
     isPageHeading: Boolean = false,
     hideLabel: Boolean = false,
     inputWidth: InputWidthStyle = "",
-    maxlength: Int = 13,
+    formGroupClasses: Option[String] = None,
     attributes: Map[String, String] = Map.empty
   )(using messages: Messages
-  ): Input =
-    TextField.input(
-      theForm,
-      prefix,
-      name,
-      prefixContent = Some(Text("£")),
-      inputMode = inputMode,
-      pattern = pattern,
-      autocomplete = Some("off"),
-      spellcheck = Some(false),
-      labelText = labelText,
-      isPageHeading = isPageHeading,
-      hideLabel = hideLabel,
-      inputWidth = inputWidth,
-      attributes = Map(
-        "maxlength"  -> maxlength.toString,
-        "aria-label" -> ariaLabel.getOrElse(fieldLabel(prefix, name))
-      ) ++ attributes
+  ): CharacterCount =
+    CharacterCount(
+      rows = rows,
+      maxLength = Some(maxLength),
+      label = buildInputLabel(isPageHeading, hideLabel, labelText, prefix, name),
+      hint = fieldHint(prefix, name),
+      classes = inputWidth.toCssClass,
+      formGroup = FormGroup(classes = formGroupClasses),
+      language = if messages.lang.language == Cy.code then Cy else En,
+      attributes = attributes
     ).withFormField(theForm(name))
