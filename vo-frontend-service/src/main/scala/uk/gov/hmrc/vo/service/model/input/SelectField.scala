@@ -18,18 +18,19 @@ package uk.gov.hmrc.vo.service.model.input
 
 import play.api.data.Form
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Fieldset, Legend, RadioItem, Radios, Text}
+import uk.gov.hmrc.govukfrontend.views.Aliases.*
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
+import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
 import uk.gov.hmrc.vo.service.model.input.LabelStyle.Bold
 
 /**
-  * Parameters to `GovukRadios` Twirl template.
+  * Parameters to `GovukSelect` Twirl template.
   *
   * @author Yuriy Tumakha
   */
-object RadioField extends FieldPropertyFormats:
+object SelectField extends FieldPropertyFormats:
 
-  def radios[T](
+  def select[T](
     theForm: Form[?],
     prefix: String,
     name: String,
@@ -37,35 +38,22 @@ object RadioField extends FieldPropertyFormats:
     valuesWithLabels: Option[Seq[(String, String)]] = None, // If `valuesWithLabels` is specified, then the `values` parameter is skipped
     labelText: Option[String] = None,
     labelStyle: Option[LabelStyle] = Some(Bold),
-    isPageHeading: Boolean = true,
-    inline: Boolean = false,
+    isPageHeading: Boolean = false,
+    hideLabel: Boolean = false,
     classes: Option[String] = None,
+    formGroupClasses: Option[String] = None,
     attributes: Map[String, String] = Map.empty
   )(using messages: Messages
-  ): Radios =
-    Radios(
-      fieldset = Some(
-        Fieldset(
-          legend = Some(
-            Legend(
-              content = fieldLabelAsContent(labelText, prefix, name),
-              classes = if isPageHeading then "govuk-fieldset__legend--l" else labelStyle.fold("")(_.cssClass),
-              isPageHeading = isPageHeading
-            )
-          )
-        )
-      ),
+  ): Select =
+    Select(
+      label = buildInputLabel(isPageHeading, hideLabel, labelText, labelStyle, prefix, name),
       hint = fieldHint(prefix, name),
       items = valuesWithLabels.getOrElse(
         values.map(value => value.toString -> itemLabel(value, prefix, name))
       ).map {
-        case (value, label) =>
-          RadioItem(
-            content = Text(label),
-            hint = itemHint(value, prefix, name),
-            value = Some(value)
-          )
+        case (value, label) => SelectItem(value = Some(value), text = label)
       },
-      classes = combineClasses(Option.when(inline)("govuk-radios--inline"), classes),
+      classes = combineClasses(classes),
+      formGroup = FormGroup(classes = formGroupClasses),
       attributes = attributes
     ).withFormField(theForm(name))
