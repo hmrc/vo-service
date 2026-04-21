@@ -21,6 +21,7 @@ import play.api.data.Form
 import play.api.data.Forms.{number, optional, text, tuple}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.*
+import uk.gov.hmrc.vo.service.model.input.LabelStyle.Medium
 import uk.gov.hmrc.vo.service.view.html.*
 import uk.gov.hmrc.vo.unit.test.BaseAppSpec
 
@@ -95,6 +96,38 @@ class RadioFieldSpec extends BaseAppSpec:
           value = Some(s"$value")
         )
       }
+    }
+
+    "set for legend css class `govuk-label--m`" in {
+      val radios: Radios = RadioField.radios(
+        feedbackForm,
+        "feedback",
+        "satisfaction",
+        5 to 1 by -1,
+        labelStyle = Medium,
+        isPageHeading = false
+      )
+
+      val legend = radios.fieldset.get.legend.get
+
+      legend.classes       shouldBe "govuk-label--m"
+      legend.isPageHeading shouldBe false
+    }
+
+    "don't set any extra css class for legend" in {
+      val radios: Radios = RadioField.radios(
+        feedbackForm,
+        "feedback",
+        "satisfaction",
+        5 to 1 by -1,
+        labelStyle = None,
+        isPageHeading = false
+      )
+
+      val legend = radios.fieldset.get.legend.get
+
+      legend.classes       shouldBe ""
+      legend.isPageHeading shouldBe false
     }
 
     "add css class" in {

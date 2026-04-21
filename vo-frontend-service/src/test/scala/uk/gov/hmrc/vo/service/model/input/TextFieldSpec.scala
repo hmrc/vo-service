@@ -26,6 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage
 import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.input.PrefixOrSuffix
 import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
+import uk.gov.hmrc.vo.service.model.input.LabelStyle.{Bold, Medium}
 import uk.gov.hmrc.vo.service.view.html.*
 import uk.gov.hmrc.vo.unit.test.BaseAppSpec
 
@@ -104,4 +105,26 @@ class TextFieldSpec extends BaseAppSpec:
       input.autocomplete                shouldBe None
       input.prefix                      shouldBe None
     }
+
+    "set for label css class `govuk-!-font-weight-bold`" in {
+      val input = TextField.input(form, "section1.page1", "name", labelStyle = Bold)
+
+      input.label.isPageHeading shouldBe false
+      input.label.classes       shouldBe "govuk-!-font-weight-bold"
+    }
+
+    "set for label css class `govuk-label--m`" in {
+      val input = TextField.input(form, "section1.page1", "name", labelStyle = Medium)
+
+      input.label.isPageHeading shouldBe false
+      input.label.classes       shouldBe "govuk-label--m"
+    }
+
+    "don't set any extra css class for label" in {
+      val input = TextField.input(form, "section1.page1", "name", labelStyle = None)
+
+      input.label.isPageHeading shouldBe false
+      input.label.classes       shouldBe ""
+    }
+
   }

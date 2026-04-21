@@ -22,6 +22,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
 import uk.gov.hmrc.hmrcfrontend.views.Aliases.CharacterCount
 import uk.gov.hmrc.hmrcfrontend.views.Implicits.*
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En}
+import uk.gov.hmrc.vo.service.model.input.LabelStyle.Bold
 
 /**
   * Parameters to `HmrcCharacterCount` Twirl template.
@@ -37,6 +38,7 @@ object TextAreaField extends FieldPropertyFormats:
     rows: Int = 5,
     maxLength: Int = 1000,
     labelText: Option[String] = None,
+    labelStyle: Option[LabelStyle] = Some(Bold),
     isPageHeading: Boolean = false,
     hideLabel: Boolean = false,
     inputWidth: InputWidthStyle = "",
@@ -47,7 +49,7 @@ object TextAreaField extends FieldPropertyFormats:
     CharacterCount(
       rows = rows,
       maxLength = Some(maxLength),
-      label = buildInputLabel(isPageHeading, hideLabel, labelText, prefix, name),
+      label = buildInputLabel(isPageHeading, hideLabel, labelText, labelStyle, prefix, name),
       hint = fieldHint(prefix, name),
       classes = inputWidth.toCssClass,
       formGroup = FormGroup(classes = formGroupClasses),

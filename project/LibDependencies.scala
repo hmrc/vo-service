@@ -3,7 +3,7 @@ import sbt.*
 private object LibDependencies {
 
   private val bootstrapVersion    = "10.7.0"
-  private val playFrontendVersion = "13.3.0"
+  private val playFrontendVersion = "13.4.0"
   private val voTestVersion       = "0.5.0"
 
   private val common: Seq[ModuleID] = Seq(

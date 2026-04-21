@@ -20,6 +20,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Fieldset, Legend, RadioItem, Radios, Text}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
+import uk.gov.hmrc.vo.service.model.input.LabelStyle.Bold
 
 /**
   * Parameters to `GovukRadios` Twirl template.
@@ -35,6 +36,7 @@ object RadioField extends FieldPropertyFormats:
     values: Seq[T] = Seq.empty,
     valuesWithLabels: Option[Seq[(String, String)]] = None, // If `valuesWithLabels` is specified, then the `values` parameter is skipped
     labelText: Option[String] = None,
+    labelStyle: Option[LabelStyle] = Some(Bold),
     isPageHeading: Boolean = true,
     inline: Boolean = false,
     classes: Option[String] = None
@@ -46,7 +48,7 @@ object RadioField extends FieldPropertyFormats:
           legend = Some(
             Legend(
               content = fieldLabelAsContent(labelText, prefix, name),
-              classes = if isPageHeading then "govuk-fieldset__legend--l" else "govuk-!-font-weight-bold",
+              classes = if isPageHeading then "govuk-fieldset__legend--l" else labelStyle.fold("")(_.cssClass),
               isPageHeading = isPageHeading
             )
           )
