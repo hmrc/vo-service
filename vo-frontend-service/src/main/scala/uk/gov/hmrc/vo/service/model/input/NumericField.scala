@@ -21,6 +21,7 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Input
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
+import uk.gov.hmrc.vo.service.model.input.LabelStyle.Bold
 
 /**
   * Parameters to `GovukInput` Twirl template.
@@ -35,6 +36,7 @@ object NumericField extends FieldPropertyFormats:
     name: String,
     ariaLabel: Option[String] = None, // Field label by default
     labelText: Option[String] = None,
+    labelStyle: Option[LabelStyle] = Some(Bold),
     isPageHeading: Boolean = false,
     hideLabel: Boolean = false,
     inputWidth: InputWidthStyle = "",
@@ -53,6 +55,7 @@ object NumericField extends FieldPropertyFormats:
       autocomplete = Some("off"),
       spellcheck = Some(false),
       labelText = labelText,
+      labelStyle = labelStyle,
       isPageHeading = isPageHeading,
       hideLabel = hideLabel,
       inputWidth = inputWidth,

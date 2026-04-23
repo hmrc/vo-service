@@ -54,14 +54,21 @@ trait FieldPropertyFormats:
   def itemHint[T](itemValue: T, fieldParts: String*)(using messages: Messages): Option[Hint] =
     hintIfDefined(fieldItemPropertyFormat(fieldParts, itemValue, "hint"))
 
-  def buildInputLabel(isPageHeading: Boolean, hideLabel: Boolean, labelText: Option[String], fieldParts: String*)(using messages: Messages): Label =
+  def buildInputLabel(
+    isPageHeading: Boolean,
+    hideLabel: Boolean,
+    labelText: Option[String],
+    labelStyle: Option[LabelStyle],
+    fieldParts: String*
+  )(using messages: Messages
+  ): Label =
     if hideLabel then
       Label()
     else
       Label(
         isPageHeading = isPageHeading,
         content = fieldLabelAsContent(labelText, fieldParts*),
-        classes = if isPageHeading then "govuk-label--l" else "govuk-!-font-weight-bold"
+        classes = if isPageHeading then "govuk-label--l" else labelStyle.fold("")(_.cssClass)
       )
 
   def combineClasses(classes: Option[String]*): String =

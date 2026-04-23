@@ -20,6 +20,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Fieldset, Legend, RadioItem, Radios, Text}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
+import uk.gov.hmrc.vo.service.model.input.LabelStyle.Bold
 
 /**
   * Parameters to `GovukRadios` Twirl template.
@@ -35,9 +36,11 @@ object RadioField extends FieldPropertyFormats:
     values: Seq[T] = Seq.empty,
     valuesWithLabels: Option[Seq[(String, String)]] = None, // If `valuesWithLabels` is specified, then the `values` parameter is skipped
     labelText: Option[String] = None,
+    labelStyle: Option[LabelStyle] = Some(Bold),
     isPageHeading: Boolean = true,
     inline: Boolean = false,
-    classes: Option[String] = None
+    classes: Option[String] = None,
+    attributes: Map[String, String] = Map.empty
   )(using messages: Messages
   ): Radios =
     Radios(
@@ -46,7 +49,7 @@ object RadioField extends FieldPropertyFormats:
           legend = Some(
             Legend(
               content = fieldLabelAsContent(labelText, prefix, name),
-              classes = if isPageHeading then "govuk-fieldset__legend--l" else "govuk-!-font-weight-bold",
+              classes = if isPageHeading then "govuk-fieldset__legend--l" else labelStyle.fold("")(_.cssClass),
               isPageHeading = isPageHeading
             )
           )
@@ -63,5 +66,6 @@ object RadioField extends FieldPropertyFormats:
             value = Some(value)
           )
       },
-      classes = combineClasses(Option.when(inline)("govuk-radios--inline"), classes)
+      classes = combineClasses(Option.when(inline)("govuk-radios--inline"), classes),
+      attributes = attributes
     ).withFormField(theForm(name))

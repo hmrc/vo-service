@@ -18,41 +18,42 @@ package uk.gov.hmrc.vo.service.model.input
 
 import play.api.data.Form
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.*
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
-import uk.gov.hmrc.hmrcfrontend.views.Aliases.CharacterCount
-import uk.gov.hmrc.hmrcfrontend.views.Implicits.*
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En}
 import uk.gov.hmrc.vo.service.model.input.LabelStyle.Bold
 
 /**
-  * Parameters to `HmrcCharacterCount` Twirl template.
+  * Parameters to `GovukSelect` Twirl template.
   *
   * @author Yuriy Tumakha
   */
-object TextAreaField extends FieldPropertyFormats:
+object SelectField extends FieldPropertyFormats:
 
-  def characterCount(
+  def select[T](
     theForm: Form[?],
     prefix: String,
     name: String,
-    rows: Int = 5,
-    maxLength: Int = 1000,
+    values: Seq[T] = Seq.empty,
+    valuesWithLabels: Option[Seq[(String, String)]] = None, // If `valuesWithLabels` is specified, then the `values` parameter is skipped
     labelText: Option[String] = None,
     labelStyle: Option[LabelStyle] = Some(Bold),
     isPageHeading: Boolean = false,
     hideLabel: Boolean = false,
-    inputWidth: InputWidthStyle = "",
+    classes: Option[String] = None,
     formGroupClasses: Option[String] = None,
     attributes: Map[String, String] = Map.empty
   )(using messages: Messages
-  ): CharacterCount =
-    CharacterCount(
-      rows = rows,
-      maxLength = Some(maxLength),
+  ): Select =
+    Select(
       label = buildInputLabel(isPageHeading, hideLabel, labelText, labelStyle, prefix, name),
       hint = fieldHint(prefix, name),
-      classes = inputWidth.toCssClass,
+      items = valuesWithLabels.getOrElse(
+        values.map(value => value.toString -> itemLabel(value, prefix, name))
+      ).map {
+        case (value, label) => SelectItem(value = Some(value), text = label)
+      },
+      classes = combineClasses(classes),
       formGroup = FormGroup(classes = formGroupClasses),
-      language = if messages.lang.language == Cy.code then Cy else En,
       attributes = attributes
     ).withFormField(theForm(name))

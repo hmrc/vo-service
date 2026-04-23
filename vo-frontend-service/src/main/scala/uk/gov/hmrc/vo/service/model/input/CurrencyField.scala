@@ -20,6 +20,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Input, Text}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
+import uk.gov.hmrc.vo.service.model.input.LabelStyle.Bold
 
 /**
   * Parameters to `GovukInput` Twirl template.
@@ -36,6 +37,7 @@ object CurrencyField extends FieldPropertyFormats:
     inputMode: Option[String] = None, // "numeric" for digits only
     pattern: Option[String] = Some("^\\s*£?\\s*(?:\\d+|\\d{1,3}(?:,\\d{3})*)(?:\\.\\d{1,2})?\\s*$"),
     labelText: Option[String] = None,
+    labelStyle: Option[LabelStyle] = Some(Bold),
     isPageHeading: Boolean = false,
     hideLabel: Boolean = false,
     inputWidth: InputWidthStyle = "",
@@ -53,6 +55,7 @@ object CurrencyField extends FieldPropertyFormats:
       autocomplete = Some("off"),
       spellcheck = Some(false),
       labelText = labelText,
+      labelStyle = labelStyle,
       isPageHeading = isPageHeading,
       hideLabel = hideLabel,
       inputWidth = inputWidth,
