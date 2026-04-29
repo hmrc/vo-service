@@ -55,7 +55,7 @@ class StandardPageSpec extends BaseAppSpec:
       result    should include("""<ul class="govuk-list govuk-error-summary__list">""")
       result    should include("""<a href="#field1">field1</a>""")
       result    should include("""<div class="govuk-notification-banner"""")
-      result    should include("""<h2 class="govuk-caption-m"><span class="govuk-visually-hidden">This section is </span>Section</h2>""")
+      result    should include("""<h2 class="govuk-caption-m hmrc-caption"><span class="govuk-visually-hidden">This section is </span>Section</h2>""")
       result    should include("""<h1 class="govuk-heading-l">Page heading</h1>""")
       result    should include("""<link href="/service-root/assets/stylesheets/app.min.css" media="all" rel="stylesheet" type="text/css" />""")
       result    should include("""<meta name="hmrc-timeout-dialog"""")
@@ -82,6 +82,7 @@ class StandardPageSpec extends BaseAppSpec:
     "render JavaScript history back link" in {
       val result = component(
         "Page with JavaScript history back link",
+        showH1 = false,
         backLinkUrl = "javascript-back"
       )(content).body
 

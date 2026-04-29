@@ -73,11 +73,15 @@
         @govukNotificationBanner(appConfig.notificationBanner)
     }
 
-    @sectionName.map { section =>
-        <h2 class="govuk-caption-m"><span class="govuk-visually-hidden">@messages("this.section.is") </span>@section</h2>
-    }
-    @if(showH1) {
-        <h1 class="govuk-heading-l">@pageHeading</h1>
+    @if(showH1 || sectionName.isDefined) {
+        <header class="hmrc-page-heading">
+            @sectionName.map { section =>
+                <h2 class="govuk-caption-m hmrc-caption"><span class="govuk-visually-hidden">@messages("this.section.is") </span>@section</h2>
+            }
+            @if(showH1) {
+                <h1 class="govuk-heading-l">@pageHeading</h1>
+            }
+        </header>
     }
 
     @contentBlock
