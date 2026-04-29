@@ -25,6 +25,5 @@ import play.api.i18n.Messages
   */
 class SearchButton(prefix: String = "search")(using messages: Messages)
   extends SubmitButton(
-    prefix,
-    attributes = Map("aria-describedby" -> "search")
+    prefix
   )

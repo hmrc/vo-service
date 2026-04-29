@@ -36,7 +36,7 @@ class SearchButtonSpec extends BaseAppSpec:
       button.content            shouldBe Text("button.search.label")
       button.preventDoubleClick shouldBe Some(true)
       button.classes            shouldBe ""
-      button.attributes         shouldBe Map("aria-describedby" -> "search")
+      button.attributes         shouldBe Map.empty
       button.href               shouldBe None
     }
 
