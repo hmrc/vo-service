@@ -3,7 +3,7 @@ import sbt.*
 private object LibDependencies {
 
   private val bootstrapVersion    = "10.7.0"
-  private val playFrontendVersion = "13.4.0"
+  private val playFrontendVersion = "13.8.0"
   private val govukNotifyVersion  = "6.0.0-RELEASE"
   private val voTestVersion       = "0.5.0"
 
