@@ -1,7 +1,7 @@
 import uk.gov.hmrc.DefaultBuildSettings.targetJvm
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "3.8.3"
+ThisBuild / scalaVersion := "3.8.4"
 ThisBuild / targetJvm := "jvm-21"
 ThisBuild / isPublicArtefact := false
 ThisBuild / scalacOptions ++= Seq("-feature", "-Wconf:msg=Flag .* set repeatedly:s")
