@@ -3,7 +3,8 @@ import sbt.*
 private object LibDependencies {
 
   private val bootstrapVersion    = "10.7.0"
-  private val playFrontendVersion = "13.4.0"
+  private val playFrontendVersion = "13.8.0"
+  private val govukNotifyVersion  = "6.0.0-RELEASE"
   private val voTestVersion       = "0.5.0"
 
   private val common: Seq[ModuleID] = Seq(
@@ -12,7 +13,8 @@ private object LibDependencies {
   )
 
   val backendDependencies: Seq[ModuleID] = common ++ Seq(
-    "uk.gov.hmrc" %% "bootstrap-backend-play-30" % bootstrapVersion % Provided
+    "uk.gov.hmrc"          %% "bootstrap-backend-play-30" % bootstrapVersion   % Provided,
+    "uk.gov.service.notify" % "notifications-java-client" % govukNotifyVersion % Provided
   )
 
   val frontendDependencies: Seq[ModuleID] = common ++ Seq(
