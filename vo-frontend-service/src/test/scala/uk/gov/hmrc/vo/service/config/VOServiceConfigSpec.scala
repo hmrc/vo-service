@@ -41,6 +41,8 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
 
   private val voServiceConfig = inject[VOServiceConfig]
 
+  private val feedbackServiceLink = "http://localhost:9514/feedback/testserviceid-inpage"
+
   "VOServiceConfig" should {
     "return serviceID" in {
       voServiceConfig.serviceID shouldBe "TestServiceID"
@@ -75,7 +77,7 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
     }
 
     "return feedbackPage url" in {
-      voServiceConfig.feedbackPage.url shouldBe "/service-root/feedback"
+      voServiceConfig.feedbackPage.url shouldBe feedbackServiceLink
     }
 
     "return true for isWelshTranslationAvailable" in {
@@ -143,7 +145,7 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
       voServiceConfig.serviceID                   shouldBe "Config:service.id"
       voServiceConfig.serviceLocalRoot.url        shouldBe "/some-service-root/home"
       voServiceConfig.serviceMenuHome.url         shouldBe "/some-service-root/home"
-      voServiceConfig.feedbackPage.url            shouldBe "http://localhost:9514/feedback/Config:service.id"
+      voServiceConfig.feedbackPage.url            shouldBe "http://localhost:9514/feedback/config:service.id-inpage"
       voServiceConfig.serviceMenuSignOut          shouldBe None
       voServiceConfig.stylesheet                  shouldBe None
       voServiceConfig.langCodes                   shouldBe Set(en)
@@ -213,7 +215,7 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
 
       standardPageParams.banners shouldBe Banners(
         displayHmrcBanner = false,
-        phaseBanner = StandardBetaBanner()("/service-root/feedback")
+        phaseBanner = StandardBetaBanner()(feedbackServiceLink)
       )
 
       standardPageParams.templateOverrides.additionalHeadBlock.get    shouldBe Html("<head/>")
@@ -246,7 +248,7 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
 
       standardPageParams.banners shouldBe Banners(
         displayHmrcBanner = false,
-        phaseBanner = Some(StandardBetaBanner()("/service-root/feedback"))
+        phaseBanner = Some(StandardBetaBanner()(feedbackServiceLink))
       )
 
       standardPageParams.templateOverrides.additionalHeadBlock    shouldBe None

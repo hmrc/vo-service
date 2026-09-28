@@ -53,5 +53,5 @@ trait VOServiceConfig extends LangCodes with StandardPageConfig with TimeoutDial
   // Feedback frontend - start
   private val localFeedbackBase          = "http://localhost:9514"
   private val feedbackBase: String       = platformFrontendHost.getOrElse(localFeedbackBase)
-  private val feedbackFrontendForm: Call = Call("GET", s"$feedbackBase/feedback/$serviceID")
+  private val feedbackFrontendForm: Call = Call("GET", s"$feedbackBase/feedback/${serviceID.toLowerCase}-inpage")
   // Feedback frontend - end

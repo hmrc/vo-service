@@ -2,10 +2,10 @@ import sbt.*
 
 private object LibDependencies {
 
-  private val bootstrapVersion    = "10.7.0"
-  private val playFrontendVersion = "13.8.0"
-  private val govukNotifyVersion  = "6.0.0-RELEASE"
-  private val voTestVersion       = "0.5.0"
+  private val bootstrapVersion    = "10.8.0"
+  private val playFrontendVersion = "13.15.0"
+  private val govukNotifyVersion  = "6.2.1-RELEASE"
+  private val voTestVersion       = "0.8.0"
 
   private val common: Seq[ModuleID] = Seq(
     "uk.gov.hmrc" %% "bootstrap-test-play-30" % bootstrapVersion % Test,
