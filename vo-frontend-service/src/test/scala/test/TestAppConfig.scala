@@ -31,7 +31,6 @@ class TestAppConfig @Inject() (val configuration: Configuration) extends VOServi
   override def serviceLocalRoot: Call           = Call("GET", "/service-root")
   override def serviceMenuHome: Call            = Call("GET", "/service-root/home")
   override def theFirstPage: Call               = Call("GET", "/service-root/first")
-  override def feedbackPage: Call               = Call("GET", "/service-root/feedback")
   override def serviceMenuSignOut: Option[Call] = Some(Call("GET", "/service-root/logout"))
 
   override def isWelshTranslationAvailable: Boolean = true

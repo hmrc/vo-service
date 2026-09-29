@@ -29,6 +29,7 @@ trait VOServiceConfig extends LangCodes with StandardPageConfig with TimeoutDial
   def theFirstPage: Call
   def serviceMenuSignOut: Option[Call]              = None
   def feedbackPage: Call                            = feedbackFrontendForm
+  def feedbackWithTag(tag: String): Call            = Call("GET", s"$feedbackBase/feedback/${serviceID.toLowerCase}-$tag")
   def serviceLocalRoot: Call                        = serviceMenuHome
   def notificationBannerEnabledOn: Set[Call]        = Set(serviceMenuHome, theFirstPage)
   def timeoutDialogEnabledExcept: Set[Call]         = Set.empty
@@ -53,5 +54,5 @@ trait VOServiceConfig extends LangCodes with StandardPageConfig with TimeoutDial
   // Feedback frontend - start
   private val localFeedbackBase          = "http://localhost:9514"
   private val feedbackBase: String       = platformFrontendHost.getOrElse(localFeedbackBase)
-  private val feedbackFrontendForm: Call = Call("GET", s"$feedbackBase/feedback/$serviceID")
+  private val feedbackFrontendForm: Call = feedbackWithTag("inpage")
   // Feedback frontend - end
