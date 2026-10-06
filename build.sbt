@@ -23,7 +23,7 @@ val templateImports: Seq[String] = Seq(
 )
 
 lazy val voFrontendService = Project("vo-frontend-service", file("vo-frontend-service"))
-  .enablePlugins(SbtTwirl)
+  .enablePlugins(SbtTwirl, SbtWeb)
   .settings(
     TwirlKeys.templateImports ++= templateImports,
     TwirlKeys.constructorAnnotations += "@javax.inject.Inject()",
