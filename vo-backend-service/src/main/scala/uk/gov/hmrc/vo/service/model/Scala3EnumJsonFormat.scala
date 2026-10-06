@@ -32,7 +32,7 @@ object Scala3EnumJsonFormat:
     val enumInstances =
       summonAll[Tuple.Map[m.MirroredElemTypes, ValueOf]].productIterator.asInstanceOf[Iterator[ValueOf[E]]].map(_.value)
 
-    val enumMap: Map[String, E] = enumInstances.map(o => o.asInstanceOf[Any].toString -> o).toMap
+    val enumMap: Map[String, E] = enumInstances.map(o => (o.asInstanceOf[Any].toString, o)).toMap
 
     Format[E](
       {

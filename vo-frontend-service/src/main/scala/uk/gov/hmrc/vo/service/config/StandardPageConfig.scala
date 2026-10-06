@@ -91,7 +91,7 @@ trait StandardPageConfig:
 
   private val notificationBannerMap: Map[String, NotificationBanner] =
     if isNotificationBannerEnabled then
-      langCodes.map(lang => lang -> buildNotificationBanner(lang)).toMap[String, NotificationBanner]
+      langCodes.map(lang => (lang, buildNotificationBanner(lang))).toMap[String, NotificationBanner]
     else Map.empty
 
   def notificationBanner(using messages: Messages): NotificationBanner = notificationBannerMap(lang)
