@@ -30,7 +30,7 @@ import scala.reflect.Selectable.reflectiveSelectable
 object Scala3EnumFieldMapping:
 
   def enumMapping[E <: scala.reflect.Enum](e: { def values: Array[E] }): Mapping[Option[E]] =
-    val enumMap: Map[String, E] = e.values.map(v => v.asInstanceOf[Any].toString -> v).toMap
+    val enumMap: Map[String, E] = e.values.map(v => (v.asInstanceOf[Any].toString, v)).toMap
 
     default(text, "")
       .transform[Option[E]](

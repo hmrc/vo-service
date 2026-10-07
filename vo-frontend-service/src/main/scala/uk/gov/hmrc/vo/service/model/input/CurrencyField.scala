@@ -60,7 +60,7 @@ object CurrencyField extends FieldPropertyFormats:
       hideLabel = hideLabel,
       inputWidth = inputWidth,
       attributes = Map(
-        "maxlength"  -> maxlength.toString,
-        "aria-label" -> ariaLabel.getOrElse(fieldLabel(prefix, name))
+        ("maxlength", maxlength.toString),
+        ("aria-label", ariaLabel.getOrElse(fieldLabel(prefix, name)))
       ) ++ attributes
     ).withFormField(theForm(name))

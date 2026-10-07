@@ -57,7 +57,7 @@ object RadioField extends FieldPropertyFormats:
       ),
       hint = fieldHint(prefix, name),
       items = valuesWithLabels.getOrElse(
-        values.map(value => value.toString -> itemLabel(value, prefix, name))
+        values.map(value => (value.toString, itemLabel(value, prefix, name)))
       ).map {
         case (value, label) =>
           RadioItem(

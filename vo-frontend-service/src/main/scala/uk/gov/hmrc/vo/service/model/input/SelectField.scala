@@ -49,7 +49,7 @@ object SelectField extends FieldPropertyFormats:
       label = buildInputLabel(isPageHeading, hideLabel, labelText, labelStyle, prefix, name),
       hint = fieldHint(prefix, name),
       items = valuesWithLabels.getOrElse(
-        values.map(value => value.toString -> itemLabel(value, prefix, name))
+        values.map(value => (value.toString, itemLabel(value, prefix, name)))
       ).map {
         case (value, label) => SelectItem(value = Some(value), text = label)
       },
