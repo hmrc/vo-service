@@ -18,13 +18,13 @@
 
 @(accountInfo: AccountInfo)(implicit messages: Messages)
 
-<ul id="account-info-header" style="margin: 0; padding: 10px; border-bottom: 2px solid #1d70b8; background-color: #f4f4f4;">
-    <li style="display: inline-block; margin-right: 30px; margin-left: 0">
+<ul id="account-info-header" class="account-info">
+    <li>
         <span class="govuk-body-s govuk-!-font-weight-bold">@messages("service.accountInfo.key1"):</span>
         <span class="govuk-body-s">@accountInfo.value1</span>
     </li>
     @accountInfo.value2.filter(_.nonEmpty).map { value2 =>
-        <li style="display: inline-block">
+        <li>
             <span class="govuk-body-s govuk-!-font-weight-bold">@messages("service.accountInfo.key2"):</span>
             <span class="govuk-body-s">@value2</span>
         </li>

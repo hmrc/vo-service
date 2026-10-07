@@ -30,12 +30,12 @@ class AccountInfoHeaderSpec extends BaseAppSpec:
   private val component = AccountInfoHeader
 
   private def expectedHtml(accountInfo: AccountInfo) =
-    s"""<ul id="account-info-header" style="margin: 0; padding: 10px; border-bottom: 2px solid #1d70b8; background-color: #f4f4f4;">
-       |    <li style="display: inline-block; margin-right: 30px; margin-left: 0">
+    s"""<ul id="account-info-header" class="account-info">
+       |    <li>
        |        <span class="govuk-body-s govuk-!-font-weight-bold">service.accountInfo.key1:</span>
        |        <span class="govuk-body-s">${accountInfo.value1}</span>
        |    </li>
-       |        <li style="display: inline-block">
+       |        <li>
        |            <span class="govuk-body-s govuk-!-font-weight-bold">service.accountInfo.key2:</span>
        |            <span class="govuk-body-s">${accountInfo.value2.getOrElse("")}</span>
        |        </li>
