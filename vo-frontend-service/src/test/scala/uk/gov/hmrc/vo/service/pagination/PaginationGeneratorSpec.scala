@@ -16,24 +16,31 @@
 
 package uk.gov.hmrc.vo.service.pagination
 
+import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Pagination, PaginationItem, PaginationLink}
-import uk.gov.hmrc.vo.unit.test.BaseSpec
+import uk.gov.hmrc.vo.unit.test.BaseAppSpec
 
 /**
   * @author Yuriy Tumakha
   */
-class PaginationGeneratorSpec extends BaseSpec:
+class PaginationGeneratorSpec extends BaseAppSpec:
 
   "PaginationGenerator" should {
-    "return empty Pagination for total = 0" in {
-      val pagination: Pagination = PaginationGenerator(1, 0, p => s"search/page/$p").generatePagination
+    "return empty Pagination for totalResults = 0" in {
+      val paginationGenerator = PaginationGenerator(1, 0, p => s"search/page/$p")
+      paginationGenerator.totalPages shouldBe 0
+
+      val pagination: Pagination = paginationGenerator.generatePagination
       pagination.previous shouldBe None
       pagination.items    shouldBe None
       pagination.next     shouldBe None
     }
 
     "generate Pagination for page 1 of 5" in {
-      val pagination: Pagination = PaginationGenerator(1, 5, p => s"search/page/$p").generatePagination
+      val paginationGenerator = PaginationGenerator(1, 44, p => s"search/page/$p")
+      paginationGenerator.totalPages shouldBe 5
+
+      val pagination: Pagination = paginationGenerator.generatePagination
       pagination.previous shouldBe None
       pagination.items    shouldBe Some(
         (1 to 5).map { p =>
@@ -48,7 +55,10 @@ class PaginationGeneratorSpec extends BaseSpec:
     }
 
     "generate prev and next for page 3 of 5" in {
-      val pagination: Pagination = PaginationGenerator(3, 5, p => s"search/page/$p").generatePagination
+      val paginationGenerator = PaginationGenerator(3, 46, p => s"search/page/$p")
+      paginationGenerator.totalPages shouldBe 5
+
+      val pagination: Pagination = paginationGenerator.generatePagination
       pagination.previous shouldBe Some(PaginationLink("search/page/2"))
       pagination.items    shouldBe Some(
         (1 to 5).map { p =>
@@ -63,7 +73,10 @@ class PaginationGeneratorSpec extends BaseSpec:
     }
 
     "generate only prev for page 5 of 5" in {
-      val pagination: Pagination = PaginationGenerator(5, 5, p => s"search/page/$p").generatePagination
+      val paginationGenerator = PaginationGenerator(5, 50, p => s"search/page/$p")
+      paginationGenerator.totalPages shouldBe 5
+
+      val pagination: Pagination = paginationGenerator.generatePagination
       pagination.previous shouldBe Some(PaginationLink("search/page/4"))
       pagination.items    shouldBe Some(
         (1 to 5).map { p =>
@@ -78,11 +91,13 @@ class PaginationGeneratorSpec extends BaseSpec:
     }
 
     "generate Pagination with ellipsis for page 15 of 50" in {
-      val paginationGenerator    = PaginationGenerator(15, 50, p => s"search/page/$p")
+      val paginationGenerator = PaginationGenerator(15, 499, p => s"search/page/$p")
+      paginationGenerator.totalPages shouldBe 50
+
       val pagination: Pagination = paginationGenerator.generatePagination
       pagination.previous shouldBe Some(PaginationLink("search/page/14"))
       pagination.items    shouldBe Some(
-        Seq(1, 0, 12, 13, 14, 15, 16, 17, 18, 0, paginationGenerator.total).map { p =>
+        Seq(1, 0, 12, 13, 14, 15, 16, 17, 18, 0, paginationGenerator.totalPages).map { p =>
           if p == 0 then
             PaginationItem(ellipsis = Some(true))
           else
@@ -97,7 +112,9 @@ class PaginationGeneratorSpec extends BaseSpec:
     }
 
     "generate Pagination with ellipsis for page 46 of 50" in {
-      val paginationGenerator    = PaginationGenerator(46, 50, p => s"search/page/$p")
+      val paginationGenerator = PaginationGenerator(46, 500, p => s"search/page/$p", resultsPerPage = 10)
+      paginationGenerator.totalPages shouldBe 50
+
       val pagination: Pagination = paginationGenerator.generatePagination
       pagination.previous shouldBe Some(PaginationLink("search/page/45"))
       pagination.items    shouldBe Some(
@@ -115,4 +132,19 @@ class PaginationGeneratorSpec extends BaseSpec:
       pagination.next     shouldBe Some(PaginationLink("search/page/47"))
     }
 
+    "provide results range" in {
+      val paginationGenerator = PaginationGenerator(46, 500, p => s"search/page/$p", resultsPerPage = 10)
+      paginationGenerator.totalPages   shouldBe 50
+      paginationGenerator.resultsRange shouldBe (451, 460)
+    }
+
+    "provide results legend" in {
+      given Messages = stubMessages(
+        "results.pagination.range.legend" -> "Showing {0} to {1} of {2} results"
+      )
+
+      val paginationGenerator = PaginationGenerator(46, 500, p => s"search/page/$p", resultsPerPage = 10)
+      paginationGenerator.totalPages                                       shouldBe 50
+      paginationGenerator.resultsLegend("results.pagination.range.legend") shouldBe "Showing 451 to 460 of 500 results"
+    }
   }

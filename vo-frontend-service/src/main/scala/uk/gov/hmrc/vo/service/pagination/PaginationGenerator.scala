@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.vo.service.pagination
 
+import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Pagination, PaginationItem, PaginationLink}
 
 /**
@@ -23,26 +24,33 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{Pagination, PaginationItem, Pagi
   *
   * @author Yuriy Tumakha
   */
-class PaginationGenerator(currentPage: Int, totalPages: Int, pageToUrl: Int => String, maxPage: Int = 100):
+class PaginationGenerator(currentPage: Int, totalResults: Int, pageToUrl: Int => String, maxPage: Int = 100, resultsPerPage: Int = 10):
 
   private val pagesAroundCurrent = 3
 
-  val page: Int  = normalizedPage(currentPage)
-  val total: Int = normalizedTotal(totalPages)
+  val page: Int       = normalizedPage(currentPage)
+  val totalPages: Int = normalizedTotalPages(Math.ceil(totalResults.toDouble / resultsPerPage).toInt)
 
   def generatePagination: Pagination =
-    total match
+    totalPages match
       case 0           => Pagination()
       case t if t < 11 => generateWithoutEllipsis
       case _           => generateWithEllipsis
 
+  def resultsRange: (Int, Int) =
+    ((page - 1) * resultsPerPage + 1, (page * resultsPerPage) min totalResults)
+
+  def resultsLegend(legendKey: String)(using messages: Messages): String =
+    val (from, to) = resultsRange
+    messages(legendKey, from, to, totalResults)
+
   private def normalizedPage(page: Int) = Math.min(Math.max(page, 1), maxPage)
 
-  private def normalizedTotal(total: Int) = Math.min(Math.max(total, 0), maxPage)
+  private def normalizedTotalPages(totalPages: Int) = Math.min(Math.max(totalPages, 0), maxPage)
 
   private def previousLink: Option[PaginationLink] = Option.when(page > 1)(PaginationLink(pageToUrl(page - 1)))
 
-  private def nextLink: Option[PaginationLink] = Option.when(page < total)(PaginationLink(pageToUrl(page + 1)))
+  private def nextLink: Option[PaginationLink] = Option.when(page < totalPages)(PaginationLink(pageToUrl(page + 1)))
 
   private def pageItem(p: Int): PaginationItem =
     PaginationItem(
@@ -55,17 +63,17 @@ class PaginationGenerator(currentPage: Int, totalPages: Int, pageToUrl: Int => S
     Pagination(
       previous = previousLink,
       next = nextLink,
-      items = Some((1 to total).map(pageItem))
+      items = Some((1 to totalPages).map(pageItem))
     )
 
   private def generateWithEllipsis: Pagination =
-    val pages = (Set(1, total) ++ (page - pagesAroundCurrent to page + pagesAroundCurrent).toSet)
-      .filter(p => p >= 1 && p <= total)
+    val pages = (Set(1, totalPages) ++ (page - pagesAroundCurrent to page + pagesAroundCurrent).toSet)
+      .filter(p => p >= 1 && p <= totalPages)
       .toSeq
       .sorted
 
     val items =
-      pages.foldRight((List.empty[PaginationItem], total)) {
+      pages.foldRight((List.empty[PaginationItem], totalPages)) {
         case (currentPage, (items, nextPage)) =>
           val updatedItems =
             if nextPage - currentPage > 1 then
