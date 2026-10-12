@@ -5,7 +5,6 @@ private object LibDependencies {
   private val bootstrapVersion    = "10.8.0"
   private val playFrontendVersion = "13.16.0"
   private val govukNotifyVersion  = "6.2.1-RELEASE"
-  private val ibmICUVersion       = "78.3"
 
   // Test dependencies
   private val voTestVersion = "0.9.0"
@@ -17,8 +16,7 @@ private object LibDependencies {
 
   val backendDependencies: Seq[ModuleID] = common ++ Seq(
     "uk.gov.hmrc"          %% "bootstrap-backend-play-30" % bootstrapVersion   % Provided,
-    "uk.gov.service.notify" % "notifications-java-client" % govukNotifyVersion % Provided,
-    "com.ibm.icu"           % "icu4j"                     % ibmICUVersion      % Provided
+    "uk.gov.service.notify" % "notifications-java-client" % govukNotifyVersion % Provided
   )
 
   val frontendDependencies: Seq[ModuleID] = common ++ Seq(

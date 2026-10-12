@@ -29,14 +29,12 @@ import scala.util.{Failure, Try}
 /**
   * @author Yuriy Tumakha
   */
-object DateConversion extends Logging:
+object DateConversion extends CymraegLangSupport with Logging:
 
   val ukTimezone: ZoneId = ZoneId.of("Europe/London")
 
   val en: Lang = Lang(Locale.UK)
   val cy: Lang = Lang(Locale.of("cy"))
-
-  private val cyDateUtil = IbmIcuDateUtil("cy")
 
   // Date
   private val longDateFormat   = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.UK)
@@ -133,9 +131,10 @@ object DateConversion extends Logging:
       * Example: 2 Ionawr 2026
       */
     def formatLongDateByLang(using lang: Lang): String =
+      val enResult = formatLongDate
       lang.language match
-        case "cy" => cyDateUtil.formatDate(localDate)
-        case _    => formatLongDate
+        case "cy" => translateMonth(enResult, localDate.getMonth)
+        case _    => enResult
 
     /**
       * Format in "d MMM yyyy".
