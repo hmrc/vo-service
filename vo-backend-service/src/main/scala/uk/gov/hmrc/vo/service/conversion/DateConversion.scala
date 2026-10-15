@@ -39,17 +39,15 @@ object DateConversion extends CymraegLangSupport with Logging:
   // Date
   private val longDateFormat   = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.UK)
   private val mediumDateFormat = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.UK)
-  private val slashDateFormat  = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.UK)
   private val isoDateFormat    = DateTimeFormatter.ISO_LOCAL_DATE // "yyyy-MM-dd"
 
   // Time
   private val timeFormat = DateTimeFormatter.ofPattern("HH:mm", Locale.UK)
 
   // DateTime
-  private val longDateTimeFormat     = DateTimeFormatter.ofPattern("d MMMM yyyy 'at' HH:mm", Locale.UK)
-  private val mediumDateTimeFormat   = DateTimeFormatter.ofPattern("d MMM yyyy HH:mm", Locale.UK)
-  private val isoSpaceDateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.UK)
-  private val isoDateTimeFormat      = DateTimeFormatter.ISO_DATE_TIME // "yyyy-MM-dd'T'HH:mm:ssXXX'['VV']'"  - 2011-12-03T10:15:30+01:00[Europe/Paris]
+  private val longDateTimeFormat   = DateTimeFormatter.ofPattern("d MMMM yyyy 'at' HH:mm", Locale.UK)
+  private val mediumDateTimeFormat = DateTimeFormatter.ofPattern("d MMM yyyy HH:mm", Locale.UK)
+  private val isoDateTimeFormat    = DateTimeFormatter.ISO_DATE_TIME // "yyyy-MM-dd'T'HH:mm:ssXXX'['VV']'" - 2011-12-03T10:15:30+01:00[Europe/London]
 
   /**
     * Current time in zone Europe/London.
@@ -89,27 +87,6 @@ object DateConversion extends CymraegLangSupport with Logging:
     def formatMediumDateTime: String = mediumDateTimeFormat.format(zonedDateTime)
 
     /**
-      * Format in "yyyy-MM-dd HH:mm:ss".
-      *
-      * Example: 2026-03-17 13:45:55
-      */
-    def formatIsoSpaceDateTime: String = isoSpaceDateTimeFormat.format(zonedDateTime)
-
-    /**
-      * Format in "yyyy-MM-dd'T'HH:mm:ssXXX'['VV']'".
-      *
-      * Example: 2026-03-17T13:45:55Z[Europe/London]
-      */
-    def formatIsoDateTime: String = isoDateTimeFormat.format(zonedDateTime)
-
-    /**
-      * Format ZonedDateTime in zone UTC in format "yyyy-MM-dd'T'HH:mm:ss'Z'".
-      *
-      * Example: 2026-12-31T13:45:55Z
-      */
-    def formatIsoDateTimeUTC: String = zonedDateTime.toInstant.formatIsoDateTimeUTC
-
-    /**
       * Format in "HH:mm".
       *
       * Example: 13:45
@@ -144,13 +121,6 @@ object DateConversion extends CymraegLangSupport with Logging:
     def formatMediumDate: String = mediumDateFormat.format(localDate)
 
     /**
-      * Format in "dd/MM/yyyy".
-      *
-      * Example: 17/03/2026
-      */
-    def formatSlashDate: String = slashDateFormat.format(localDate)
-
-    /**
       * Format in "yyyy-MM-dd".
       *
       * Example: 2026-03-17
@@ -158,6 +128,19 @@ object DateConversion extends CymraegLangSupport with Logging:
     def formatIsoDate: String = isoDateFormat.format(localDate)
 
   extension (string: String)
+
+    /**
+      * Parse Instant in zone UTC from "yyyy-MM-dd'T'HH:mm:ss'Z'".
+      *
+      * Used DateTimeFormatter.ISO_INSTANT.
+      */
+    def parseIsoInstantUTC: Option[Instant] =
+      Try(Instant.parse(string))
+        .recoverWith { ex =>
+          logger.warn(s"Can't parse Instant: $string", ex)
+          Failure(ex)
+        }
+        .toOption
 
     /**
       * Parse LocalDate from long date format "d MMMM yyyy".
@@ -181,5 +164,13 @@ object DateConversion extends CymraegLangSupport with Logging:
   implicit val zonedDateTimeToLocalDate: Conversion[ZonedDateTime, LocalDate] = _.toLocalDate
 
   implicit val localDateToZonedDateTime: Conversion[LocalDate, ZonedDateTime] = _.atStartOfDay(ukTimezone)
+
+  implicit val zonedDateTimeToInstant: Conversion[ZonedDateTime, Instant] = _.toInstant
+
+  implicit val instantToZonedDateTime: Conversion[Instant, ZonedDateTime] = _.atZone(ukTimezone)
+
+  implicit val localDateToInstant: Conversion[LocalDate, Instant] = localDateToZonedDateTime.apply
+
+  implicit val instantToLocalDate: Conversion[Instant, LocalDate] = instantToZonedDateTime.apply
 
   implicit def langFromMessages(using messages: Messages): Lang = messages.lang

@@ -75,7 +75,9 @@ trait StandardPageConfig:
         beforeContentBlock = beforeContentBlock,
         mainContentLayout = Option.when(fullWidth)(FullWidthMainContent(_))
       ),
-      serviceNavigation = Option(serviceNavigationItems).filter(_.nonEmpty).map(ServiceNavigation(serviceName, serviceUrls.serviceUrl, _))
+      serviceNavigation = Option(serviceNavigationItems).filter(_.nonEmpty)
+        .map(_.map(item => if request.path == item.href then item.copy(current = true) else item))
+        .map(ServiceNavigation(serviceName, serviceUrls.serviceUrl, _))
     )
 
   val isPhaseBannerEnabled: Boolean = getBoolean("phaseBanner.enabled")

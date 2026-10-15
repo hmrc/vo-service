@@ -192,7 +192,7 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
     }
 
     "build HmrcStandardPageParams" in {
-      given RequestHeader = getRequest
+      given RequestHeader = FakeRequest(GET, "/service-root/home")
 
       val standardPageParams = voServiceConfig.pageParams(
         "Page heading",
@@ -201,7 +201,10 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
         "<head/>",
         "<script/>",
         "<div>beforeContent</div>",
-        Seq(ServiceNavigationItem(Text("Menu item 1"), "#"))
+        Seq(
+          ServiceNavigationItem(Text("Menu item 1"), "/service-root/home"),
+          ServiceNavigationItem(Text("Menu item 2"), "/service-root/page2")
+        )
       )
 
       standardPageParams.pageTitle.get               shouldBe "Page heading - service.name - gov.name"
@@ -228,7 +231,10 @@ class VOServiceConfigSpec extends BaseAppSpec with LangSupport:
       standardPageParams.serviceNavigation.get shouldBe ServiceNavigation(
         "service.name",
         "/service-root/home",
-        List(ServiceNavigationItem(Text("Menu item 1"), "#"))
+        Seq(
+          ServiceNavigationItem(Text("Menu item 1"), "/service-root/home", current = true),
+          ServiceNavigationItem(Text("Menu item 2"), "/service-root/page2")
+        )
       )
     }
 
