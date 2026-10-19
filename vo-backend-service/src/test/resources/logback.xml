@@ -9,6 +9,8 @@
 
     <logger name="uk.gov" level="DEBUG"/>
 
+    <logger name="uk.gov.hmrc.vo.service.connectors.AuditService" level="DEBUG" />
+
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
     </root>
